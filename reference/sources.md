@@ -1,6 +1,6 @@
 # sources - 라이브러리·라이선스·attribution
 
-Load from reference/office.md when crediting upstream code, checking a license before redistribution, or recording provenance.
+Load from `reference/office.md` when 업스트림 코드 출처를 표기하거나, 재배포 전 라이선스를 확인하거나, provenance(출처 이력)를 기록할 때.
 
 라이선스는 2026 실측 read - 재배포 전 각 패키지에서 재확인. 라이선스는 바뀐다; 이 표는 보증이 아니라 한 시점의 기록이다.
 

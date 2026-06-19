@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// integrity-gate - deterministic floor against fabricated facts in educational content.
+// integrity-gate - deterministic floor against fabricated facts in business documents.
 // True fact-checking needs the LLM critic; THIS script enforces the discipline that makes checking
 // possible: every statistic/date/superlative the content asserts must be DECLARED in facts.json
 // with a real source. It catches (a) declared facts with placeholder/empty sources, and
 // (b) content that asserts factual signals while declaring none. NEVER weaken it to pass - cite or cut.
 //
-// Per-line escape hatch: "edu-ok" on a content line suppresses its factual-signal hits (use for a
-// made-up in-story number, e.g. "토끼가 사과 5개를 먹었다" in a word problem).
+// Per-line escape hatch: "gate-ok" on a content line suppresses its factual-signal hits (use for a
+// hypothetical/illustrative number explicitly marked as such, not a real metric).
 //
 // Usage: node integrity-gate.mjs <facts.json> [<contentfile> ...]
 //   facts.json: [{ "claim": "...", "source": "..." }, ...]  (may be [] for content with no facts)
@@ -56,7 +56,7 @@ for (const file of contentFiles) {
   catch (e) { console.error(`integrity-gate: cannot read ${file}: ${e.message}`); continue; }
   read++;
   text.split(/\r?\n/).forEach((line, i) => {
-    if (/edu-ok/i.test(line)) return;
+    if (/gate-ok/i.test(line)) return;
     for (const s of SIGNALS) if (s.re.test(line)) { signalHits++; if (facts.length === 0) findings.push(`${file}:${i + 1}: factual signal [${s.id}] but facts.json declares no sourced facts: "${line.trim().slice(0, 60)}"`); }
   });
 }

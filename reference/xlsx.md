@@ -158,7 +158,7 @@ wb.close()   # read_only는 close 필요
 ## 변환
 
 ```bash
-bash templates/doc-env.sh soffice-convert kpi.xlsx pdf out/   # LibreOffice headless, H2Orestart 불필요
+bash templates/doc-env.sh soffice_convert kpi.xlsx pdf out/   # LibreOffice headless, H2Orestart 불필요
 ```
 
 `templates/doc-env.py soffice_convert(src, fmt='pdf', outdir)`로 위임(OS 경로는 거기 집약). soffice 부재 시 RuntimeError - 그때는 .xlsx 원본 + 수동 변환 안내를 남기고 가짜 PDF를 만들지 않는다(no-fabrication). 주의: xlsx->pdf에서 차트·일부 서식이 단순화될 수 있다 - 직접 본 것만 단정한다.

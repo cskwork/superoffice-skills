@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// safety-gate - deterministic detector for child-safety + house-rule tells in built content.
-// Scans source (HTML/JS/MD/TXT/script) for: emoji (banned in deliverables), PII, forbidden topics
-// per grade band, unsafe links, and Korean CommonMark blank-line breaks. The Builder cannot ship
-// content for minors past machine-checkable safety violations by eyeball.
+// safety-gate - deterministic detector for house-rule tells in built content (business documents).
+// Scans source (HTML/JS/MD/TXT/script) for: emoji (banned in deliverables), PII, forbidden words,
+// unsafe links, and Korean CommonMark blank-line breaks. The producer cannot ship a document
+// past machine-checkable safety violations by eyeball. (--band is optional; office use passes none.)
 // NEVER edit this script (or forbidden-topics.json) to make unsafe content pass - fix the content.
 //
-// Per-line escape hatch: a line containing "edu-ok" suppresses ALL rules on that line
-// (use only for a deliberate, justified case, e.g. a quoted email in a worksheet sample).
+// Per-line escape hatch: a line containing "gate-ok" suppresses ALL rules on that line
+// (use only for a deliberate, justified case, e.g. a legitimate contact line quoted as evidence).
 //
 // Usage: node safety-gate.mjs [--band <초저|초고|중|고>] <file> [<file> ...]
 // Exit 0 = no violations. Exit 1 = at least one violation. Exit 2 = usage/read error.
@@ -88,7 +88,7 @@ for (const file of files) {
   const lines = text.split(/\r?\n/);
   let prev = null;
   lines.forEach((line, i) => {
-    if (/edu-ok/i.test(line)) { suppressed++; prev = line; return; }
+    if (/gate-ok/i.test(line)) { suppressed++; prev = line; return; }
     for (const rule of RULES) {
       if (rule.test(line)) findings.push({ file, line: i + 1, id: rule.id, msg: rule.msg, snippet: line.trim().slice(0, 80) });
     }
@@ -108,10 +108,10 @@ if (findings.length > 0) {
     console.log(`${f.file}:${f.line}  [${f.id}]  ${f.msg}`);
     console.log(`    > ${f.snippet}`);
   }
-  console.log(`\n${findings.length} violation(s) across ${read} file(s)${suppressed ? `, ${suppressed} line(s) suppressed by edu-ok` : ""}.`);
+  console.log(`\n${findings.length} violation(s) across ${read} file(s)${suppressed ? `, ${suppressed} line(s) suppressed by gate-ok` : ""}.`);
   console.log("Fix the content, not this gate.");
   process.exit(1);
 }
 
-console.log(`== SAFETY GATE: PASS == (${read} file(s), band ${band || "universal-only"}${suppressed ? `, ${suppressed} edu-ok suppression(s)` : ""})`);
+console.log(`== SAFETY GATE: PASS == (${read} file(s), band ${band || "universal-only"}${suppressed ? `, ${suppressed} gate-ok suppression(s)` : ""})`);
 process.exit(0);

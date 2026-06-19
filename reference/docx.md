@@ -57,6 +57,36 @@ def shade_cell(cell, hex_no_hash):                 # 상태 셀 음영 (RAG)
 
 브랜드 색도 contrast-gate AA를 통과해야 한다 - 흰 배경에서 실패하면 경고하고 어두운 변형을 제안한다. 색보다 메시지 구조가 먼저(`reference/biz-report.md`).
 
+## 결재 문서 (품의서·기안문)
+
+품의서·기안문은 보고서와 구조가 다르다 - 상단에 결재란, 메타(문서번호·시행일·보존연한), 협조. 결재란은 **이미지가 아니라 표**로 만든다(게이트 텍스트 검사 + 편집 가능). 본문은 목적·내용·소요예산·기대효과. 결재선 직책/이름은 자리표시(`[직책]`/`[이름]`) - 승인 체계를 날조하지 않는다.
+
+```python
+appr = doc.add_table(rows=2, cols=3); appr.style = "Table Grid"   # 상단 결재란
+for j, role in enumerate(["담당", "검토", "승인"]): appr.cell(0, j).text = role
+# 2행 서명/날짜 칸은 비워 둠(실제 결재 시 채움)
+```
+
+메타는 본문 위 단락으로(`문서번호`/`시행일`/`보존연한`/`협조`). 소요예산·기대효과는 표 또는 불릿, 수치는 `facts.json` 출처. 결재 문서도 결론(목적) 먼저(`reference/biz-report.md`).
+
+## 목차·페이지번호·머리말/바닥글 (다페이지 보고서)
+
+3페이지 넘는 보고서·제안서는 페이지번호·머리말이 없으면 미완성으로 읽힌다.
+
+```python
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+def add_page_number(par):                              # 바닥글 페이지 번호 (Word 필드)
+    fld = OxmlElement("w:fldSimple"); fld.set(qn("w:instr"), "PAGE")
+    par._p.append(fld)
+footer = doc.sections[0].footer; footer.paragraphs[0].alignment = 1   # 가운데
+add_page_number(footer.paragraphs[0])
+doc.sections[0].header.paragraphs[0].text = "사내 한정 · 2026 1분기 보고"   # 머리말
+```
+
+목차(TOC): python-docx는 TOC 필드를 자동 갱신하지 못한다 - (a) 정적 목차를 표/단락으로 직접 만들거나, (b) TOC 필드를 넣고 "한컴/Word에서 F9로 갱신" 안내를 남긴다(빈 목차를 채운 척 금지).
+
 ## 읽기
 
 ```python

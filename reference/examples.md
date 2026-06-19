@@ -4,7 +4,7 @@ Load from `reference/office.md` when 사용자가 "이 형식으로 / 이거 따
 
 ## 두 가지 예시 소스
 
-1. **하우스 견본** (`examples/format/`): `status-report.md`(진행 현황 7섹션), `proposal.md`(제안 SCQA), `exec-summary.md`(1페이지 요약). biz-report 구조를 자리표시로 채운 형식 모델 - 형식 무관(어느 산출 형식으로도 렌더). 사용자가 형식을 따로 안 줬는데 표준 보고가 필요하면 여기서 고른다.
+1. **하우스 견본** (`examples/format/`): `status-report.md`(진행 현황 7섹션), `proposal.md`(제안 SCQA), `exec-summary.md`(1페이지 요약), `minutes.md`(회의록 - 결정·액션 우선). biz-report 구조를 자리표시로 채운 형식 모델 - 형식 무관(어느 산출 형식으로도 렌더). 사용자가 형식을 따로 안 줬는데 표준 보고가 필요하면 여기서 고른다.
 2. **사용자 제공 예시** (또는 회사 양식 파일): 사용자가 준 기존 문서(.docx/.pptx/.xlsx/.hwpx/.pdf)나 회사 양식. `reference/doc-ingest.md`로 읽어 구조를 뽑는다. 회사 양식 파일은 브랜드(색/폰트)와 형식(레이아웃) **이중 소스**다 - 브랜드는 `reference/brand-kit.md`, 형식은 여기.
 
 ## 절차 - 구조를 따르되 내용은 새로 쓴다

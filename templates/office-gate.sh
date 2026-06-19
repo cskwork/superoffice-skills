@@ -48,7 +48,7 @@ for f in "${SRC[@]:-}"; do case "$f" in *.md|*.txt|*.html|*.csv) [ -f "$f" ] && 
 
 # 4. safety-gate (band 없이 = emoji/PII/insecure link/universal 금지어; 성인 대상이라 band별 어휘는 미적용).
 echo "-- safety-gate (universal, no band) --"
-node "$HERE/safety-gate.mjs" "${TXT[@]}" || fail "safety violations (이모지/PII/링크 - 정당한 연락처 등은 해당 줄 끝에 edu-ok 주석으로 억제)"
+node "$HERE/safety-gate.mjs" "${TXT[@]}" || fail "safety violations (이모지/PII/링크 - 정당한 연락처 등은 해당 줄 끝에 gate-ok 주석으로 억제)"
 
 # 5. korean-gate (맞춤법/띄어쓰기 high-confidence).
 echo "-- korean-gate --"
