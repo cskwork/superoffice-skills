@@ -1,0 +1,9 @@
+# Cross-platform line endings: LF everywhere so shell gates run on macOS/Linux.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.pptx binary
+*.xlsx binary
+*.hwpx binary

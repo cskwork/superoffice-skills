@@ -1,0 +1,30 @@
+{
+  "note": "korean-gate.mjs reads this. misspell = substring match (line.includes(bad)); spacing = case-sensitive RegExp against each line. Keep BOTH lists to CLEARLY-wrong forms only - Korean spelling/spacing is context-sensitive, so a regex that fires on legitimate text is a defect. On a false positive: add edu-ok to that line, or remove the rule. Naturalness/맞춤법 beyond these high-confidence patterns is the edu-critic's job, not this gate. Expand per school policy.",
+  "misspell": [
+    { "bad": "되요", "good": "돼요", "msg": "맞춤법: '되요' -> '돼요' (되+어요)" },
+    { "bad": "됬", "good": "됐", "msg": "맞춤법: '됬-' -> '됐-' (되+었)" },
+    { "bad": "되서", "good": "돼서", "msg": "맞춤법: '되서' -> '돼서' (되+어서)" },
+    { "bad": "거에요", "good": "거예요", "msg": "맞춤법: '거에요' -> '거예요'" },
+    { "bad": "몇일", "good": "며칠", "msg": "맞춤법: '몇일' -> '며칠'" },
+    { "bad": "오랫만", "good": "오랜만", "msg": "맞춤법: '오랫만' -> '오랜만'" },
+    { "bad": "역활", "good": "역할", "msg": "맞춤법: '역활' -> '역할'" },
+    { "bad": "어떻해", "good": "어떡해", "msg": "맞춤법: '어떻해' -> '어떡해' ('어떻게'는 정답)" },
+    { "bad": "설겆이", "good": "설거지", "msg": "맞춤법: '설겆이' -> '설거지'" },
+    { "bad": "닥달", "good": "닦달", "msg": "맞춤법: '닥달' -> '닦달'" },
+    { "bad": "어의없", "good": "어이없", "msg": "맞춤법: '어의없-' -> '어이없-'" },
+    { "bad": "희안", "good": "희한", "msg": "맞춤법: '희안-' -> '희한-'" },
+    { "bad": "웬지", "good": "왠지", "msg": "맞춤법: '웬지' -> '왠지' ('왠지'만 정답, 나머지는 '웬-')" },
+    { "bad": "왠만", "good": "웬만", "msg": "맞춤법: '왠만-' -> '웬만-'" },
+    { "bad": "할께", "good": "할게", "msg": "맞춤법: '할께' -> '할게' (-ㄹ게)" },
+    { "bad": "갈께", "good": "갈게", "msg": "맞춤법: '갈께' -> '갈게' (-ㄹ게)" },
+    { "bad": "볼께", "good": "볼게", "msg": "맞춤법: '볼께' -> '볼게' (-ㄹ게)" },
+    { "bad": "줄께", "good": "줄게", "msg": "맞춤법: '줄께' -> '줄게' (-ㄹ게)" },
+    { "bad": "올께", "good": "올게", "msg": "맞춤법: '올께' -> '올게' (-ㄹ게)" }
+  ],
+  "spacing": [
+    { "re": "(는|은|을|던)것", "msg": "띄어쓰기: 의존명사 '것' 앞은 띄움 (예: '하는것' -> '하는 것')" },
+    { "re": "수(있|없)", "msg": "띄어쓰기: 의존명사 '수' 앞뒤는 띄움 (예: '할수있다' -> '할 수 있다')" },
+    { "re": "(하는|한)척", "msg": "띄어쓰기: 의존명사 '척' 앞은 띄움 (예: '하는척' -> '하는 척')" },
+    { "re": "(하는|한)체", "msg": "띄어쓰기: 의존명사 '체' 앞은 띄움 (예: '하는체' -> '하는 체')" }
+  ]
+}

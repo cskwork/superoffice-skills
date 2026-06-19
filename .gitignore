@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+venv/
+.venv/
+# per-document work vault (runtime artifacts, not source)
+.superoffice/
+_smoke/
+examples/out/
+# transient office/render outputs
+*.tmp
+~$*
