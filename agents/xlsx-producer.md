@@ -21,6 +21,7 @@ DO:
 - 읽기: `load_workbook(filename, read_only=False, data_only=False)`. 대용량은 `read_only=True`(스트리밍, `wb.close()`). `data_only=True`는 캐시된 수식 결과를 주지만 Excel/LibreOffice가 한 번 열어 저장한 적 없으면 None — openpyxl은 수식을 계산하지 않는다. 계산값이 필요하면 soffice로 한 번 열거나 원본 수치를 읽는다(내용 위조 금지).
 - 변환: `doc-env.sh`/`doc-env.py`의 `soffice_convert(src, fmt='pdf', outdir='.')` 재사용(xlsx는 H2Orestart 불필요). `bash templates/doc-env.sh soffice_convert report.xlsx pdf out/`. soffice 부재 시 raise — xlsx + 수동 변환 안내만 남기고 가짜 PDF는 만들지 않는다.
 - 브랜드: `brand-kit.json` 색을 헤더 fill·차트 series·강조에 적용(본문 셀은 monochrome, 강조는 도형/series에). 브랜드 색도 contrast-gate AA를 통과해야 함 — 흰 배경에서 떨어지면 경고 + 어두운 변형 제안.
+- 형식 따라하기: 사용자가 기존 정산표/회사 KPI 양식을 주면 `reference/examples.md`로 시트 구조(헤더·열 구성·표 모양)를 따른다 - 구조는 모방하되 수치는 새로(facts.json 출처), 예시 값을 복제하지 않는다.
 - 게이트 근거: .xlsx는 바이너리 — 셀값을 `.csv`로 덤프해 vault에 둔다(office-gate는 텍스트만 스캔, 바이너리 못 읽음).
 - 한국어: CommonMark 빈 줄 간격, 이모지 금지(대괄호 마커), 어절 띄어쓰기·맞춤법. 수치/날짜/통계는 `facts.json` 출처 또는 삭제.
 

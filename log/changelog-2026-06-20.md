@@ -29,3 +29,12 @@
 ## Attribution
 
 supercontent(문서 craft·게이트·팔레트), supergoal(스킬 제작·서브에이전트 vault 공유·인터뷰 패턴), anthropics/skills(트렌딩 오피스 스킬 - 패턴만, 라이브러리는 Python 스택 유지). 상세 `reference/sources.md`.
+
+## 추가 (같은 날) - 형식 예시 + 회사 양식 분석
+
+사용자 피드백 두 건 반영:
+
+- **형식 따라하기**: 하우스 골든 견본 `examples/format/`(status-report·proposal·exec-summary, biz-report 구조를 자리표시로 채운 형식 모델) + `reference/examples.md`(견본 또는 사용자 제공 예시/회사 양식의 구조·톤을 모방하되 내용은 새로, verbatim 복제·위조 금지). doc-producer·xlsx-producer가 이를 따른다.
+- **회사 양식 = 브랜드 + 형식 이중 소스**: 회사 자체 양식이 있으면 그 파일 분석이 브랜드 1순위(상호작용 - 추출→사용자 확인·수정→저장), 그 양식의 레이아웃·섹션 구조는 형식 예시로도 쓴다(`format_skeleton`). 양식이 없을 때만 인터뷰/하우스 기본. brand-kit.md·brand-interviewer.md 강화.
+- 결정(기각한 대안): 견본을 렌더된 바이너리로 넣지 않고 텍스트 `.md` 형식 모델로 - 게이트 검사 가능 + 형식 무관(어느 산출 형식으로도 렌더) + diff 친화.
+- 검증: reference-links 2/2(SKILL.md→examples.md), 견본 3종 safety+korean 게이트 PASS(이모지 없음·어절 띄어쓰기), examples.md가 SKILL/office/brand-kit/3 에이전트/README에서 일관 참조.

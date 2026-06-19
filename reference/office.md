@@ -49,7 +49,7 @@ bash templates/office-gate.sh .superoffice/<doc> <text source files>
 
 ## 회사 브랜드 (팀장·경영자용 핵심)
 
-회사별 템플릿/스타일을 두 방식으로 입힌다 - 둘 다 지원한다: (1) **템플릿 파일 상속** (`Presentation("회사.pptx")` / `Document("회사.docx")` / openpyxl 스타일), (2) **brand-kit.json 인터뷰** (색/폰트/로고/정책을 한 번 캡처해 모든 형식·문서에 재사용). 회사 색도 `contrast-gate` AA를 통과해야 한다. 상세는 `reference/brand-kit.md`, 인터뷰는 `agents/brand-interviewer.md`.
+회사별 템플릿/스타일을 두 방식으로 입힌다 - 둘 다 지원한다: (1) **템플릿 파일 상속** (`Presentation("회사.pptx")` / `Document("회사.docx")` / openpyxl 스타일), (2) **brand-kit.json 인터뷰** (색/폰트/로고/정책을 한 번 캡처해 모든 형식·문서에 재사용). 회사 색도 `contrast-gate` AA를 통과해야 한다. 상세는 `reference/brand-kit.md`, 인터뷰는 `agents/brand-interviewer.md`. **회사 자체 양식 파일이 있으면 그 파일 분석이 1순위**(상호작용 추출·확인)이며, 그 양식은 브랜드뿐 아니라 **형식 예시**(레이아웃·섹션 구조)이기도 하다 - 형식 따라하기는 `reference/examples.md`(하우스 견본 + 사용자 예시).
 
 ## 비즈니스 보고 디자인 (업무 문서 공통)
 

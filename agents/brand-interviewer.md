@@ -13,7 +13,7 @@ EDIT only: `.superoffice/<doc>/brand-kit.json` + `doc-claims.md`에 한 줄(`브
 
 ## 두 경로 (둘 다 시도, 추출 먼저)
 
-(a) **템플릿 파일 분석** - 사용자가 `.pptx`/`.docx`/`.xlsx`를 줬으면 **직접 뽑을 수 있는 것만** 추출한다. 못 뽑는 항목만 (b)로 넘긴다 (위조 금지 - 추측한 색을 "추출됨"이라 쓰지 않는다).
+(a) **템플릿 파일 분석 (회사 자체 양식이 있을 때 1순위)** - 사용자가 `.pptx`/`.docx`/`.xlsx`를 줬으면 **직접 뽑을 수 있는 것만** 추출한다. 못 뽑는 항목만 (b)로 넘긴다 (위조 금지 - 추측한 색을 "추출됨"이라 쓰지 않는다). 추출 후 **brand-kit 초안을 conductor에 surface해 사용자 확인·수정을 받고** 저장한다(상호작용 - 추출값은 오인식이 있으니 눈으로 확정). 추출한 레이아웃·섹션 구조(제목 스타일·표 모양·슬라이드 순서)는 `format_skeleton`으로 함께 기록해 `reference/examples.md`의 형식 예시로 넘긴다(회사 양식 = 브랜드 + 형식 이중 소스). 양식이 없으면 이 경로를 건너뛰고 (b)로 간다.
 
 - `.pptx`: `Presentation(path)`; `prs.slide_masters[0]` 테마 색은 `prs.slide_masters[0].element` XML의 `<a:clrScheme>`(dk1/lt1/accent1..6) 또는 도형 `shape.fill.fore_color.rgb`(타입이 RGB일 때만; 테마참조면 `None`). 폰트는 `run.font.name`/`master` placeholder의 `run.font.name`. `prs.slide_width`/`slide_height`(EMU; 12192000x6858000 = 16:9).
 - `.docx`: `Document(path)`; `doc.styles['Normal'].font.name`/`.size`, 제목은 `styles['Heading 1']`. 본문 색은 `run.font.color.rgb`(RGB일 때만). 섹션 크기 `doc.sections[0].page_width`(EMU).
