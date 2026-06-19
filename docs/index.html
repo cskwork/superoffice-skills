@@ -195,7 +195,7 @@
 <span class="dim">-- safety-gate (universal, no band) --</span>
 <span class="fail">body.txt:4 [emoji] 이모지 금지, 대괄호 마커 사용 [현황]</span>
 <span class="dim">-- korean-gate --</span>
-<span class="fail">body.txt:7 [korean-spacing] '수' 띄어쓰기: "할수있다" -> "할 수 있다"</span>
+<span class="fail">body.txt:7 [korean-spacing] '수' 띄어쓰기: "할수있다" -> "할 수 있다"</span><!-- edu-ok: 게이트 데모 -->
 <span class="dim">-- integrity-gate --</span>
 <span class="fail">body.txt:1 [year] 2026년 미출처 - facts.json 출처 또는 삭제</span>
 <span class="cmd"># 위반 수정 후 재실행</span>
@@ -323,7 +323,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
 <span class="dim">-- safety-gate (universal, no band) --</span>
 <span class="fail">body.txt:4 [emoji] no emoji, use bracket markers [현황]</span>
 <span class="dim">-- korean-gate --</span>
-<span class="fail">body.txt:7 [korean-spacing] "할수있다" -> "할 수 있다"</span>
+<span class="fail">body.txt:7 [korean-spacing] "할수있다" -> "할 수 있다"</span><!-- edu-ok: gate demo -->
 <span class="dim">-- integrity-gate --</span>
 <span class="fail">body.txt:1 [year] 2026 unsourced - cite in facts.json or cut</span>
 <span class="cmd"># after fixing, re-run</span>

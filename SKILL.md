@@ -29,7 +29,7 @@ State e.g. `Making this as: PPTX 1분기 실적 보고 덱, 회사 브랜드 적
 | 한글 공문서 / 공공·기업 표준 / hwpx | HWPX | `reference/hwpx.md` |
 | 다페이지 본문 PDF 생성 / PDF 읽기·표 추출 | PDF | `reference/pdf.md` |
 | 기존 문서(docx/pptx/xlsx/pdf/hwpx) 읽기·표 추출 | READ | `reference/doc-ingest.md` |
-| 형식 변환 (hwpx<->docx<->pdf<->xlsx) | CONVERT | 각 형식 reference의 변환 섹션 (`templates/doc-env.sh`) |
+| 형식 변환 / 마크다운 (hwpx<->docx<->pdf<->xlsx<->md) | CONVERT | 각 형식 reference의 변환 섹션 (`templates/doc-env.sh`); .md는 `reference/markdown.md` |
 
 오버레이(빌드 모드 위에 얹음): **BRAND** 회사 템플릿/스타일 반영 -> `reference/brand-kit.md` (어느 빌드 모드든). **메시지 구조** 보고서·덱 -> `reference/biz-report.md` (보고 문서면 항상).
 
@@ -70,6 +70,7 @@ Roles -> personas: 브랜드=`agents/brand-interviewer.md`, 문서빌드=`agents
 | `reference/hwpx.md` | HWPX 빌드/편집/읽기/검증 (python-hwpx) |
 | `reference/pdf.md` | PDF 생성/읽기 (Chromium/WeasyPrint/ReportLab; pdfplumber/pypdf) |
 | `reference/doc-ingest.md` | READ: 형식 무관 기존 문서 읽기 매트릭스 |
+| `reference/markdown.md` | 마크다운 <-> office 변환·추출 (.md 소스/산출) |
 | `reference/sources.md` | 라이브러리·라이선스·attribution |
 
 ## Final checklist

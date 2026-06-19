@@ -7,6 +7,7 @@
 CLI:
   python doc-env.py soffice-convert <src> <fmt> [outdir]   # 예: ... report.docx pdf out/
   python doc-env.py chrome-pdf <html> <out.pdf>
+  python doc-env.py pandoc <src> <out> [extra]             # md<->office (예: in.md out.docx)
   python doc-env.py font                                   # 한글 TTF 경로 + 폰트명 출력
 """
 from __future__ import annotations
@@ -55,6 +56,19 @@ def find_chrome() -> str | None:
             r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
         ]
     cands += ["google-chrome", "chromium", "chromium-browser", "chrome"]
+    return _first_runnable(cands)
+
+
+def find_pandoc() -> str | None:
+    """pandoc 실행 파일 (Markdown <-> office 변환). 환경변수 PANDOC > PATH > 관례 경로."""
+    env = os.environ.get("PANDOC")
+    cands = [env] if env else []
+    cands += ["pandoc"]
+    if WIN:
+        cands += [
+            r"C:\Program Files\Pandoc\pandoc.exe",
+            os.path.expandvars(r"%LOCALAPPDATA%\Pandoc\pandoc.exe"),
+        ]
     return _first_runnable(cands)
 
 
@@ -148,6 +162,18 @@ def chrome_to_pdf(html_path: str, pdf_path: str) -> str:
     return pdf_path
 
 
+def pandoc_convert(src: str, out: str, extra: list[str] | None = None) -> str:
+    """pandoc 변환 (md->docx/pptx, docx->md 등). 산출 경로 반환. 실패 시 RuntimeError.
+    pandoc 부재 시: MD->PDF는 chrome_to_pdf(HTML 경유)로 폴백, MD->docx/pptx는 pandoc 설치 필요(위조 금지)."""
+    pandoc = find_pandoc()
+    if not pandoc:
+        raise RuntimeError("pandoc 없음 - MD<->office는 pandoc 설치 권장(MD->PDF는 chrome 폴백 가능)")
+    r = subprocess.run([pandoc, src, "-o", out] + (extra or []), capture_output=True, text=True)
+    if r.returncode != 0 or not os.path.exists(out):
+        raise RuntimeError(f"pandoc 변환 실패: {r.stdout.strip()} {r.stderr.strip()}")
+    return out
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if not args:
@@ -159,6 +185,8 @@ if __name__ == "__main__":
                               args[3] if len(args) > 3 else "."))
     elif cmd == "chrome-pdf":
         print(chrome_to_pdf(args[1], args[2]))
+    elif cmd == "pandoc":
+        print(pandoc_convert(args[1], args[2], args[3:] or None))
     elif cmd == "font":
         print("ttf:", korean_ttf_path())
         print("name:", korean_font_name())

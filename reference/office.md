@@ -21,6 +21,7 @@ State e.g. `DOCS: 1분기 실적 보고 -> .pptx 생성, 회사 브랜드 적용
 | .pdf 생성 (다페이지 본문) / .pdf 읽기·표 추출 | Chromium·WeasyPrint·ReportLab / pdfplumber·pypdf | `reference/pdf.md` |
 | 형식 무관 기존 문서 읽기 (어떤 파서를 언제) | 통합 매트릭스 | `reference/doc-ingest.md` |
 | 형식 변환 (hwpx<->docx<->pdf<->xlsx 등) | LibreOffice + H2Orestart | 각 형식 reference의 변환 섹션 |
+| 마크다운(.md) <-> office 생성·추출 | pandoc·chrome·python-markdown | `reference/markdown.md` |
 
 ## Step 2 - 게이트 (단일 트랙)
 
