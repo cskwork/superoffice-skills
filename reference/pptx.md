@@ -19,13 +19,27 @@ s.shapes.add_picture("chart.png", Inches(1), Inches(5))   # 실제 파일만
 prs.save("deck.pptx")
 ```
 
+위는 **회사 템플릿이 없을 때**의 from-scratch 경로(빈 레이아웃 + 도형 + 하우스 팔레트). **회사 템플릿(마스터)이 있으면 아래 브랜드킷 1번**(회사 레이아웃 + 플레이스홀더)을 써야 회사 테마가 적용된다.
+
 한글 폰트: docx와 같은 원리지만 python-pptx는 `font.name`만으로 동작하는 경우가 많다. 깨질 때는 단락의 `rPr`에 eastAsia를 다는 패턴을 `templates/doc-env.py`에서 가져온다. 폰트는 이름만 임베드되므로 협업 시 범용 폰트 권장.
 
 ## 브랜드킷 적용 (두 경로)
 
 회사 스타일은 두 방식으로 동일하게 적용한다 - 자세한 건 `reference/brand-kit.md`.
 
-1. 템플릿 파일 상속: `Presentation("회사템플릿.pptx")`로 열면 슬라이드 마스터·레이아웃·테마색·기본 폰트를 그대로 물려받는다. 회사 양식을 처음부터 다시 그리지 말고 상속 후 텍스트만 채운다.
+1. 템플릿 파일 상속 (회사 양식이 있으면 1순위): `Presentation("회사템플릿.pptx")`로 열면 슬라이드 마스터·레이아웃·테마색·기본 폰트를 그대로 물려받는다. **회사 레이아웃을 쓰고 그 플레이스홀더를 채운다** - 빈 레이아웃에 자유 텍스트박스를 그리거나 색을 하드코딩하면 회사 테마가 안 먹는다.
+
+   ```python
+   prs = Presentation("회사템플릿.pptx")                # 회사 마스터/레이아웃/테마 상속
+   for i, l in enumerate(prs.slide_layouts): print(i, l.name)   # 회사가 정의한 레이아웃 먼저 확인
+   s = prs.slides.add_slide(prs.slide_layouts[1])       # 회사 레이아웃으로 추가(테마·폰트 자동 적용)
+   for ph in s.placeholders: print(ph.placeholder_format.idx, ph.name)   # 플레이스홀더 구성 확인
+   s.placeholders[0].text = "2026년 1분기 실적 보고"    # 제목 플레이스홀더 (자유 textbox 대신)
+   s.placeholders[1].text = "[결론] 매출 안정, 채널 확대 권고"   # 본문 플레이스홀더
+   prs.save("deck.pptx")
+   ```
+
+   레이아웃 인덱스·플레이스홀더 idx는 템플릿마다 다르니 위처럼 먼저 출력해 확인한다(가정 금지). 마스터에 이미 있는 표·차트·로고 자리는 새로 그리지 말고 그 자리를 채운다. 회사 테마색이 contrast AA에 미달하면 경고만 하고 임의로 바꾸지 않는다(회사 양식 존중 - 텍스트를 밝은 자리에 배치로 우회).
 2. brand-kit.json 우선: 인터뷰로 한 번 캡처한 색/폰트/로고/푸터를 모든 형식에 재사용. 표지 primary, accent 바, 헤더색을 brand-kit.json 값으로 치환.
 
 브랜드 색도 `contrast-gate.mjs` AA 필수: 회사 색이 흰 배경에서 미달이면 경고하고 더 어두운 변형을 제안한다. 눈대중 금지.
