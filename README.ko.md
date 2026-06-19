@@ -4,6 +4,8 @@
 
 한국 직장인(특히 팀장·경영자)의 업무 문서를 만드는 Claude Code 스킬. 브리프를 읽고, 형식을 판별하고, 회사 브랜드를 입히고, 결론 먼저(BLUF) 메시지 구조로, 결정론적 `office-gate`를 통과하는 보고서·제안서·발표 덱·정산표·대시보드를 산출한다. `.docx` `.pptx` `.xlsx` `.hwpx` `.pdf`를 생성·읽기·변환하며 Windows/macOS에서 동일하게 동작한다. 교육 자료를 만드는 자매 스킬 [supercontent](https://github.com/cskwork/supercontent-skill)의 업무 문서 버전이다.
 
+랜딩 페이지: https://cskwork.github.io/superoffice-skills
+
 ## 일반 문서 프롬프트보다 더하는 것
 
 - **결론 먼저, 디자인은 그다음.** 팀장·경영자는 60초 안에 권고를 이해해야 한다. action title(제목이 결론), 한장보고, SCQA 임원 요약, RAG 상태판 - 메시지 구조(`reference/biz-report.md`)를 디자인보다 먼저 적용한다.

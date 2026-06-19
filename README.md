@@ -4,6 +4,8 @@
 
 A business-document maker for Korean office workers - especially 팀장·경영자 (team leads and executives) - as a Claude Code skill. Read the brief, route to the right format, apply the company brand, and ship a report, deck, or sheet with answer-first (BLUF) message structure that passes a deterministic `office-gate`. Generates, reads, and converts `.docx` `.pptx` `.xlsx` `.hwpx` `.pdf` identically on Windows and macOS. It is the workplace-document sibling of [supercontent](https://github.com/cskwork/supercontent-skill) (which owns education).
 
+Landing page: https://cskwork.github.io/superoffice-skills
+
 ## What it adds over a plain document prompt
 
 - **Answer first, design second.** Executives must grasp the recommendation in 60 seconds. Action titles (the title IS the conclusion), one-page reports, SCQA executive summaries, RAG dashboards - the message structure (`reference/biz-report.md`) is applied before any design.

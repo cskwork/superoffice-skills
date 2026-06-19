@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>superoffice - 직장인 업무 문서, 회사 브랜드로, 결론 먼저</title>
+<meta name="description" content="Korean business-document maker for 팀장·경영자. Generate, read, and convert docx/pptx/xlsx/hwpx/pdf with company branding past a deterministic office-gate. Windows/macOS.">
+<style>
+  :root{
+    --ink:#1f2933;       /* near-black */
+    --paper:#f3f5f7;     /* light grey */
+    --panel:#ffffff;
+    --line:#d7dee5;
+    --muted:#5a6675;
+    --primary:#273340;   /* deep slate */
+    --accent:#3d5a80;    /* deliberate blue, one place */
+    --green:#2e6f5e;
+    --amber:#e3a82b;
+    --red:#b0413e;
+    --code-bg:#1f2933;
+    --code-ink:#e6ebf0;
+    --font: system-ui,-apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    --mono: ui-monospace,"SF Mono",Menlo,Consolas,"D2Coding",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+  a{color:var(--accent)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-0.01em;font-weight:700}
+  code,kbd{font-family:var(--mono);font-size:0.92em}
+  .topbar{height:5px;background:var(--primary)}
+
+  /* nav: shared across languages - GitHub link always visible */
+  nav.bar{border-bottom:1px solid var(--line);background:var(--panel)}
+  nav.bar .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+  nav.bar .brand{font-family:var(--mono);font-size:14px;letter-spacing:0.06em;color:var(--primary);font-weight:700}
+  nav.bar .nav-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .langbtns{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .langbtns button{font-family:var(--mono);font-size:12.5px;border:0;background:var(--panel);color:var(--muted);padding:7px 12px;cursor:pointer}
+  .langbtns button[aria-pressed="true"]{background:var(--primary);color:#fff}
+  .gh{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;
+    text-decoration:none;color:#fff;background:var(--primary);border-radius:4px;padding:8px 13px}
+  .gh:hover{background:#1c252f}
+  .gh svg{width:15px;height:15px;fill:currentColor}
+
+  header .hero{padding:80px 0 58px}
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent)}
+  .hero h1{font-size:clamp(30px,5.4vw,52px);margin:16px 0 0}
+  .hero p.lead{font-size:clamp(16px,2.3vw,20px);max-width:64ch;color:var(--muted);margin:18px 0 0}
+  .cta{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+  .cta a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:5px;padding:11px 17px;font-size:14.5px;font-weight:600}
+  .cta .primary{background:var(--primary);color:#fff}
+  .cta .ghost{border:1px solid var(--line);color:var(--ink);background:var(--panel)}
+  .tags{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:3px;padding:5px 10px;color:var(--muted);background:var(--panel)}
+
+  section{padding:58px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(23px,3.2vw,31px);margin:0 0 8px}
+  section .sub{color:var(--muted);max-width:66ch;margin:0 0 28px}
+  .frame{font-family:var(--mono);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:13px}
+
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--primary);color:#fff}
+  td:first-child{font-family:var(--mono);font-weight:700;white-space:nowrap;color:var(--accent)}
+
+  .three{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .three div{border-left:3px solid var(--accent);padding:4px 0 4px 16px}
+  .three h3{margin:0 0 6px;font-size:18px}
+  .three p{margin:0;color:var(--muted);font-size:15px}
+
+  .loop{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .loop li{counter-increment:s;border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:18px;position:relative}
+  .loop li::before{content:counter(s);font-family:var(--mono);font-weight:700;color:var(--accent);font-size:13px;display:block;margin-bottom:6px}
+  .loop b{display:block;font-size:16px;margin-bottom:4px}
+  .loop span{color:var(--muted);font-size:14px}
+
+  .gate{background:var(--code-bg);color:var(--code-ink);border-radius:6px;padding:22px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border:1px solid #2c3742}
+  .gate .cmd{color:#9ec9bd}.gate .fail{color:#e3a82b}.gate .ok{color:#84c98e}.gate .dim{color:#8b96a3}
+
+  .checks{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));margin-top:8px}
+  .check{border:1px solid var(--line);border-radius:4px;padding:16px;background:var(--panel)}
+  .check b{font-family:var(--mono);font-size:13px;color:var(--accent);display:block;margin-bottom:5px}
+  .check span{font-size:14px;color:var(--muted)}
+
+  .brand-demo{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .swatch{border-radius:4px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);min-width:120px}
+
+  .install pre{background:var(--code-bg);color:var(--code-ink);border-radius:6px;padding:20px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.7;border:1px solid #2c3742}
+  .install .cm{color:#8b96a3}
+
+  footer{padding:40px 0 60px;color:var(--muted);font-size:14px}
+  footer a{color:var(--accent)}
+  .kbd{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:2px 7px;font-size:0.9em;color:var(--ink)}
+
+  /* language switch */
+  .lang{display:none}
+  body.lang-ko #ko{display:block}
+  body.lang-en #en{display:block}
+</style>
+</head>
+<body class="lang-ko">
+
+<div class="topbar"></div>
+<nav class="bar">
+  <div class="wrap row">
+    <span class="brand">/superoffice</span>
+    <div class="nav-right">
+      <div class="langbtns" role="group" aria-label="language">
+        <button id="btn-ko" aria-pressed="true" onclick="setLang('ko')">한국어</button>
+        <button id="btn-en" aria-pressed="false" onclick="setLang('en')">English</button>
+      </div>
+      <a class="gh" href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================ KOREAN ============================ -->
+<div id="ko" class="lang">
+<header>
+  <div class="wrap hero">
+    <div class="eyebrow">superoffice</div>
+    <h1>직장인 업무 문서, 회사 브랜드로, 결론 먼저.</h1>
+    <p class="lead">팀장·경영자에게 올라가는 보고서·제안서·발표 덱·정산표를 만듭니다. 브리프를 읽고, 형식을 판별하고, 회사 브랜드를 입히고, 결론 먼저(BLUF) 메시지 구조로, 결정적 office-gate를 통과한 문서를 산출합니다. docx·pptx·xlsx·hwpx·pdf 생성·읽기·변환, Windows/macOS 호환.</p>
+    <div class="cta">
+      <a class="primary" href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">GitHub에서 보기 (소개)</a>
+      <a class="ghost" href="#install">설치 + 빠른 시작</a>
+    </div>
+    <div class="tags">
+      <span class="tag">docx · pptx · xlsx · hwpx · pdf</span>
+      <span class="tag">회사 브랜드킷</span>
+      <span class="tag">결정적 게이트</span>
+      <span class="tag">한국어 교정</span>
+      <span class="tag">no emoji</span>
+      <span class="tag">WCAG AA</span>
+      <span class="tag">현재 = 2026</span>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <section>
+    <div class="frame">왜 평범한 문서 프롬프트보다 나은가</div>
+    <h2>결론 먼저, 디자인은 그 다음.</h2>
+    <p class="sub">임원은 60초 안에 권고를 이해해야 합니다. 색이 예뻐도 결론이 묻히면 업무 문서가 아닙니다.</p>
+    <div class="three">
+      <div><h3>결론 먼저(BLUF)</h3><p>제목이 결론을 말하는 action title, 한장보고, SCQA 임원 요약, RAG 상태판. 메시지 구조를 디자인보다 먼저 적용합니다.</p></div>
+      <div><h3>회사 브랜드 일관</h3><p>회사 템플릿 파일 상속과 brand-kit.json 인터뷰를 둘 다 지원. 색·폰트·로고·정책을 한 번 캡처해 모든 형식에 일관 적용합니다.</p></div>
+      <div><h3>검증은 눈대중이 아니다</h3><p>빌더는 스스로 승인하지 않습니다. 독립 critic이 office-gate를 돌려 맞춤법·사실·이모지·색 대비를 판정합니다.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">하나의 기본 틀이 아니다</div>
+    <h2>형식과 작업이 모드를 정한다.</h2>
+    <p class="sub">신호를 읽고 알맞은 라이브러리와 디자인으로 보냅니다. 모든 빌드 모드는 같은 office-gate로 검증됩니다.</p>
+    <table>
+      <thead><tr><th>Mode</th><th>신호</th><th>산출</th></tr></thead>
+      <tbody>
+        <tr><td>DOCX</td><td>보고서 · 제안서 · 기안 · 공문 본문</td><td>python-docx 본문 문서</td></tr>
+        <tr><td>PPTX</td><td>발표 덱 · 보고 슬라이드 · 정밀 표·도형</td><td>python-pptx 정밀 제어</td></tr>
+        <tr><td>XLSX</td><td>정산 · KPI · 대시보드 · 표·수식·차트</td><td>openpyxl 조건부서식·차트</td></tr>
+        <tr><td>HWPX</td><td>한글 공문서 · 공공·기업 표준</td><td>python-hwpx 1급</td></tr>
+        <tr><td>PDF</td><td>다페이지 본문 PDF 생성 · PDF 읽기</td><td>Chromium/WeasyPrint · pdfplumber</td></tr>
+        <tr><td>READ</td><td>기존 문서 읽기 · 표 추출</td><td>통합 파서 매트릭스</td></tr>
+        <tr><td>CONVERT</td><td>형식 변환 (hwpx↔docx↔pdf↔xlsx)</td><td>LibreOffice + H2Orestart</td></tr>
+        <tr><td>BRAND</td><td>회사 템플릿/스타일 반영 (오버레이)</td><td>.superoffice/brand-kit.json</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="frame">회사 브랜드, 한 번 캡처해 모든 형식에</div>
+    <h2>brand-kit.json - 팀장·경영자용 차별점.</h2>
+    <p class="sub">템플릿 파일 상속(Presentation("회사.pptx"))과 짧은 인터뷰(≤5문항)로 색·폰트·로고·정책을 캡처. 회사 색도 contrast-gate AA를 통과해야 합니다.</p>
+    <div class="brand-demo">
+      <div class="swatch" style="background:#273340;color:#fff">primary #273340</div>
+      <div class="swatch" style="background:#3d5a80;color:#fff">accent #3D5A80</div>
+      <div class="swatch" style="background:#2e6f5e;color:#fff">RAG green</div>
+      <div class="swatch" style="background:#e3a82b;color:#1f2933">RAG amber (다크 텍스트)</div>
+      <div class="swatch" style="background:#b0413e;color:#fff">RAG red</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">눈대중이 아니라 결정적 게이트</div>
+    <h2>예측 가능한 실패는 grep 가능하다.</h2>
+    <p class="sub">스크립트가 판정을 계산하므로 조용한 결함이 통과할 수 없습니다. 바이너리 문서는 본문/셀을 텍스트로 추출해 검사합니다.</p>
+    <div class="gate" aria-label="office-gate 예시 출력">
+<span class="cmd">$ bash templates/office-gate.sh .superoffice/q1-report body.txt</span>
+<span class="dim">-- safety-gate (universal, no band) --</span>
+<span class="fail">body.txt:4 [emoji] 이모지 금지, 대괄호 마커 사용 [현황]</span>
+<span class="dim">-- korean-gate --</span>
+<span class="fail">body.txt:7 [korean-spacing] '수' 띄어쓰기: "할수있다" -> "할 수 있다"</span>
+<span class="dim">-- integrity-gate --</span>
+<span class="fail">body.txt:1 [year] 2026년 미출처 - facts.json 출처 또는 삭제</span>
+<span class="cmd"># 위반 수정 후 재실행</span>
+<span class="cmd">$ bash templates/office-gate.sh .superoffice/q1-report body.txt</span>
+<span class="ok">== SAFETY GATE: PASS ==</span>
+<span class="ok">== KOREAN GATE: PASS ==</span>
+<span class="ok">== INTEGRITY GATE: PASS ==</span> <span class="dim">(facts.json 출처)</span>
+<span class="ok">== CONTRAST GATE: PASS ==</span> <span class="dim">(WCAG AA)</span>
+<span class="ok">== OFFICE PREFLIGHT: PASS ==</span>
+    </div>
+    <div class="checks">
+      <div class="check"><b>safety-gate</b><span>이모지 / PII / 안전하지 않은 링크 / 금지어 (성인 업무 문서라 band 없음).</span></div>
+      <div class="check"><b>korean-gate</b><span>어절 띄어쓰기 + 흔한 맞춤법(<code>korean-rules.json</code>). 거의 확실한 오류만 차단.</span></div>
+      <div class="check"><b>integrity-gate</b><span><code>facts.json</code>의 수치·날짜·통계에 출처가 있는지. 미출처 수치 차단.</span></div>
+      <div class="check"><b>contrast-gate</b><span>표지·도표·배지의 텍스트/배경 쌍 WCAG AA. 회사 색도 예외 없음.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">역할 분리, 서브에이전트 기본</div>
+    <h2>빌드는 자기 작업을 채점하지 않는다.</h2>
+    <p class="sub">conductor가 brand-interviewer → producer → critic을 fresh-context로 디스패치, 산출물은 vault에 누적됩니다.</p>
+    <ol class="loop">
+      <li><b>Read</b><span>형식 / 대상 / 목적 / 변환 타깃을 한 줄로 선언.</span></li>
+      <li><b>Brand</b><span>회사 템플릿 상속 또는 ≤5문항 인터뷰로 brand-kit.json 캡처.</span></li>
+      <li><b>Build</b><span>doc-producer / xlsx-producer. 메시지 구조 + 팔레트, 실제 자산만.</span></li>
+      <li><b>Critique</b><span>독립 실행. office-gate.sh를 돌리고 모든 위반 기록, 편집 없음.</span></li>
+      <li><b>Verify</b><span>위반마다 최소 수정, 초록될 때까지 재실행. 최대 3회.</span></li>
+    </ol>
+  </section>
+
+  <section id="install" class="install">
+    <div class="frame">설치 + 빠른 시작</div>
+    <h2>~/.claude/skills/superoffice 에 산다.</h2>
+    <p class="sub">자기완결, 우아한 폴백. 라이브러리/변환 도구가 없으면 placeholder + [substitution]을 기록하고 위조하지 않습니다.</p>
+    <pre><span class="cm"># 스킬 설치</span>
+git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superoffice
+
+<span class="cm"># 그 다음, Claude Code 에서</span>
+/superoffice "1분기 실적 보고서 docx로"
+/superoffice "신규 사업 제안 발표 덱, 회사 템플릿으로"  <span class="cm"># PPTX + BRAND</span>
+/superoffice "월 정산 KPI 대시보드 엑셀로"              <span class="cm"># XLSX</span>
+/superoffice "협조 공문 hwpx로"                         <span class="cm"># HWPX</span>
+/superoffice "받은 정산표 xlsx 표 추출해줘"             <span class="cm"># READ</span></pre>
+  </section>
+</main>
+<footer class="wrap">
+  <p>자매 스킬 패턴: 문서 craft·게이트·팔레트는 <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>, 스킬 제작·서브에이전트·인터뷰는 <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>. 라이브러리: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart.</p>
+  <p>소스 + 전체 문서: <a href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">github.com/cskwork/superoffice-skills</a>. 현재 2026. 이모지 없음 - 대괄호 마커 <span class="kbd">[현황]</span> <span class="kbd">[조치]</span> <span class="kbd">[결론]</span>.</p>
+</footer>
+</div>
+
+<!-- ============================ ENGLISH ============================ -->
+<div id="en" class="lang">
+<header>
+  <div class="wrap hero">
+    <div class="eyebrow">superoffice</div>
+    <h1>Business documents. Company brand. Answer first.</h1>
+    <p class="lead">Reports, proposals, decks, and sheets that go up to team leads and executives. Read the brief, route to the right format, apply the company brand, and ship an answer-first (BLUF) document past a deterministic office-gate. Generate, read, and convert docx, pptx, xlsx, hwpx, and pdf on Windows and macOS.</p>
+    <div class="cta">
+      <a class="primary" href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">View on GitHub (About)</a>
+      <a class="ghost" href="#install-en">Install + quickstart</a>
+    </div>
+    <div class="tags">
+      <span class="tag">docx · pptx · xlsx · hwpx · pdf</span>
+      <span class="tag">company brand kit</span>
+      <span class="tag">deterministic gate</span>
+      <span class="tag">Korean proofing</span>
+      <span class="tag">no emoji</span>
+      <span class="tag">WCAG AA</span>
+      <span class="tag">2026</span>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <section>
+    <div class="frame">Why it beats a plain document prompt</div>
+    <h2>Answer first, design second.</h2>
+    <p class="sub">Executives must grasp the recommendation in 60 seconds. A pretty palette with a buried conclusion is not a business document.</p>
+    <div class="three">
+      <div><h3>Answer first (BLUF)</h3><p>Action titles where the title is the conclusion, one-page reports, SCQA executive summaries, RAG dashboards. Message structure comes before any design.</p></div>
+      <div><h3>Consistent company brand</h3><p>Both company-template inheritance and a brand-kit.json interview. Capture colors, fonts, logo, and policy once and apply them across every format.</p></div>
+      <div><h3>Verification, not eyeballing</h3><p>The builder never self-approves. An independent critic runs office-gate to judge spelling, facts, emoji, and color contrast.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">Not one default template</div>
+    <h2>Format and operation pick the mode.</h2>
+    <p class="sub">Read the signal, route to the right library and design. Every build mode is verified by the same office-gate.</p>
+    <table>
+      <thead><tr><th>Mode</th><th>Signal</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>DOCX</td><td>report · proposal · draft · official letter</td><td>python-docx body document</td></tr>
+        <tr><td>PPTX</td><td>deck · report slides · precise tables/shapes</td><td>python-pptx precise control</td></tr>
+        <tr><td>XLSX</td><td>settlement · KPI · dashboard · formulas/charts</td><td>openpyxl conditional formatting/charts</td></tr>
+        <tr><td>HWPX</td><td>Hangul official doc · public/corporate standard</td><td>python-hwpx first-class</td></tr>
+        <tr><td>PDF</td><td>multi-page PDF generation · PDF read</td><td>Chromium/WeasyPrint · pdfplumber</td></tr>
+        <tr><td>READ</td><td>read existing documents · extract tables</td><td>unified parser matrix</td></tr>
+        <tr><td>CONVERT</td><td>format conversion (hwpx↔docx↔pdf↔xlsx)</td><td>LibreOffice + H2Orestart</td></tr>
+        <tr><td>BRAND</td><td>apply company template/style (overlay)</td><td>.superoffice/brand-kit.json</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="frame">Capture the brand once, apply everywhere</div>
+    <h2>brand-kit.json - the differentiator for execs.</h2>
+    <p class="sub">Template-file inheritance (Presentation("brand.pptx")) plus a short interview (≤5 questions) capture colors, fonts, logo, and policy. Company colors must still pass contrast-gate AA.</p>
+    <div class="brand-demo">
+      <div class="swatch" style="background:#273340;color:#fff">primary #273340</div>
+      <div class="swatch" style="background:#3d5a80;color:#fff">accent #3D5A80</div>
+      <div class="swatch" style="background:#2e6f5e;color:#fff">RAG green</div>
+      <div class="swatch" style="background:#e3a82b;color:#1f2933">RAG amber (dark text)</div>
+      <div class="swatch" style="background:#b0413e;color:#fff">RAG red</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">A deterministic gate, not a vibe check</div>
+    <h2>Predictable failure is greppable.</h2>
+    <p class="sub">A script computes the verdict, so silent defects cannot pass. Binary documents are scanned by exporting body text/cells first.</p>
+    <div class="gate" aria-label="office-gate sample output">
+<span class="cmd">$ bash templates/office-gate.sh .superoffice/q1-report body.txt</span>
+<span class="dim">-- safety-gate (universal, no band) --</span>
+<span class="fail">body.txt:4 [emoji] no emoji, use bracket markers [현황]</span>
+<span class="dim">-- korean-gate --</span>
+<span class="fail">body.txt:7 [korean-spacing] "할수있다" -> "할 수 있다"</span>
+<span class="dim">-- integrity-gate --</span>
+<span class="fail">body.txt:1 [year] 2026 unsourced - cite in facts.json or cut</span>
+<span class="cmd"># after fixing, re-run</span>
+<span class="cmd">$ bash templates/office-gate.sh .superoffice/q1-report body.txt</span>
+<span class="ok">== SAFETY GATE: PASS ==</span>
+<span class="ok">== KOREAN GATE: PASS ==</span>
+<span class="ok">== INTEGRITY GATE: PASS ==</span> <span class="dim">(sourced facts)</span>
+<span class="ok">== CONTRAST GATE: PASS ==</span> <span class="dim">(WCAG AA)</span>
+<span class="ok">== OFFICE PREFLIGHT: PASS ==</span>
+    </div>
+    <div class="checks">
+      <div class="check"><b>safety-gate</b><span>Emoji / PII / insecure links / forbidden words (no band - adult business docs).</span></div>
+      <div class="check"><b>korean-gate</b><span>Word spacing + common spelling (<code>korean-rules.json</code>). Only near-certain errors block.</span></div>
+      <div class="check"><b>integrity-gate</b><span>Every number/date/stat in <code>facts.json</code> must be sourced. Unsourced figures blocked.</span></div>
+      <div class="check"><b>contrast-gate</b><span>Text/background pairs on covers, charts, badges at WCAG AA. Company colors too.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="frame">Role-separated, subagent-default</div>
+    <h2>The builder does not grade its own work.</h2>
+    <p class="sub">A conductor dispatches brand-interviewer → producer → critic in fresh contexts; outputs accumulate in the vault.</p>
+    <ol class="loop">
+      <li><b>Read</b><span>Declare format / audience / purpose / conversion target in one line.</span></li>
+      <li><b>Brand</b><span>Inherit a company template or capture brand-kit.json in ≤5 questions.</span></li>
+      <li><b>Build</b><span>doc-producer / xlsx-producer. Message structure + palette, real assets only.</span></li>
+      <li><b>Critique</b><span>Independent. Run office-gate.sh, log every violation, no edits.</span></li>
+      <li><b>Verify</b><span>Smallest fix per violation, re-run until green. Cap 3 cycles.</span></li>
+    </ol>
+  </section>
+
+  <section id="install-en" class="install">
+    <div class="frame">Install + quickstart</div>
+    <h2>It lives in ~/.claude/skills/superoffice.</h2>
+    <p class="sub">Self-contained, graceful fallback. A missing library or converter is logged as a placeholder + [substitution], never faked.</p>
+    <pre><span class="cm"># install the skill</span>
+git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superoffice
+
+<span class="cm"># then, in Claude Code</span>
+/superoffice "Q1 results report as docx"
+/superoffice "new-business proposal deck, company template"  <span class="cm"># PPTX + BRAND</span>
+/superoffice "monthly KPI dashboard as xlsx"                 <span class="cm"># XLSX</span>
+/superoffice "cooperation official letter as hwpx"           <span class="cm"># HWPX</span>
+/superoffice "extract the tables from this xlsx"             <span class="cm"># READ</span></pre>
+  </section>
+</main>
+<footer class="wrap">
+  <p>Sibling-skill patterns: document craft, gates, and palette from <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>; skill-authoring, subagent, and interview patterns from <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>. Libraries: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart.</p>
+  <p>Source + full docs: <a href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">github.com/cskwork/superoffice-skills</a>. Current 2026. No emoji - bracket markers <span class="kbd">[현황]</span> <span class="kbd">[조치]</span> <span class="kbd">[결론]</span>.</p>
+</footer>
+</div>
+
+<script>
+  function setLang(l){
+    document.body.className = 'lang-' + l;
+    document.documentElement.lang = (l === 'en') ? 'en' : 'ko';
+    document.getElementById('btn-ko').setAttribute('aria-pressed', l === 'ko');
+    document.getElementById('btn-en').setAttribute('aria-pressed', l === 'en');
+    try{ localStorage.setItem('superoffice-lang', l); }catch(e){}
+  }
+  (function(){
+    var saved;
+    try{ saved = localStorage.getItem('superoffice-lang'); }catch(e){}
+    var l = saved || ((navigator.language||'ko').toLowerCase().indexOf('ko') === 0 ? 'ko' : 'en');
+    setLang(l);
+  })();
+</script>
+</body>
+</html>
