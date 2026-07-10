@@ -37,4 +37,4 @@ superoffice 스킬(팀장·경영자용 업무 문서 메이커)을 개선한다
 |---|---|---|---|---|
 | d1 | OfficeCLI를 기본 빌더로 교체할지 | resolved | 스모크+A/B 완료(qa/smoke-report.md): 렌더/issues/validate/merge 실측 PASS, PDF·hwpx 플러그인 기본 부재, A/B 품질 동일 | 기본 빌더 유지(python), OfficeCLI = 표준 렌더 검증기 + merge + 읽기 보조 + 단순 문서 퀵 빌드 옵션 |
 | d2 | brew 설치 실패/지연 시 npm(@officecli/officecli) 폴백 | resolved | brew 설치 성공(1.0.135) | 폴백 불필요 |
-| d3 | hwpx 문서 4종째 생성 여부 | resolved | 세션 한도 중단 2회로 시간 소진 | 미생성 - residual risk로 기록(QA.md·changelog), hwpx 경로는 이번 런에서 무변경이라 기존 검증 상태 유지 |
+| d3 | hwpx 문서 4종째 생성 여부 | resolved | 후속 지시("finishing rest")로 생산 - 공문 .hwpx, 게이트 green + OWPML validate/라운드트립/공문 린트 1.0, critic FIX-MED(시각층은 도구 부재로 미검증 - 한글 뷰어 육안이 잔여) | 생산 완료, 시각층만 residual. hwpx.md 마찰 4건(버전 표기·공문 린트 문서화·fallback 출력·공문 견본 부재) 환류 |

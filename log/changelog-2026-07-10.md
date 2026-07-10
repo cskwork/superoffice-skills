@@ -25,6 +25,14 @@
 - 독립 적대 리뷰: CRITICAL 0, HIGH 2(증거층 - weekly 추출 헤더 누락, kpi doc-claims 낡음)는 수정 완료, MED 5·LOW 4 전부 처리(M2 exit code 전파, M1/M5 실측 정정, L2/L3/L4 문서화).
 - 미해결(잔여 리스크): hwpx 4종째 문서는 미생산(시간 여력 - d3 게이트, hwpx 경로는 기존 그대로), 회사 브랜드킷 상속 경로는 이번 런 미검증, Windows에서의 officecli 동작은 미실측(문서에는 officecli 자체 안내로 귀속).
 
+## 추가 (2026-07-11) - hwpx 공문 4종째 + 랜딩 동기화
+
+- **hwpx 공문 생산·검수**: 협력사 시스템 점검 안내 공문을 python-hwpx 2.24.0으로 생산. 렌더는 officecli hwpx 플러그인 부재로 불가 -> 대체 검증 3종 실제 실행(OWPML validate ok / 라운드트립 텍스트 일치 / 공문 구조 린트 11규칙 score 1.0), "렌더 미검증"을 doc-claims에 명시(critic: residual 처리 "4종 중 모범"). critic MINOR(목적격조사 중첩) 수정 후 전 체인 재실행 green. 잔여: 발송 전 한글 뷰어 육안 1회.
+- **hwpx 환류 4건**: hwpx.md 버전 표기(2.11.1 실측 -> 2.24.0 재확인, API 시그니처 전부 일치), `inspect_official_document_style` 문서화(호출 예·11규칙·공개구분 하드 요구 - 소스를 읽어야만 알 수 있던 함정), fallback stdout 안내 주의, **공문 하우스 견본 신설**(examples/format/official-notice.md - 린트 1.0 산출물 구조를 자리표시로 일반화, SKILL/hwpx.md가 공문을 대표 사례로 쓰면서 견본이 없던 공백).
+- **doc-claims 템플릿 표준화**(critic 보강 제안): 렌더 검증 메모 블록(상태/도구 부재 실측/대체 검증/잔여 시각 항목/파일명-내용 일치)과 run-to-prove 렌더 단계를 templates/doc-claims.md에 - 미검증 residual 처리 품질이 문서마다 제각각이던 문제를 vault 시작점에서 통일. 셀 덤프 .csv -> .md/.txt 주의도 템플릿에 반영.
+- **랜딩 동기화**: docs/index.html KO/EN 각 4곳(검증 카드·게이트 체크 그리드에 렌더 검증 추가·Critique 단계·라이브러리 목록)에 OfficeCLI 렌더 검증 반영.
+- doc-env.py `officecli-validate` exit code 계약 정정 상세는 위 "평가 런이 발견해 환류한 것" 참조.
+
 ## Attribution
 
 iOfficeAI/OfficeCLI(Apache-2.0, 실측 1.0.135 - sources.md 등재), supergoal(LEGACY 런 격리·adversarial review·환류 루프), 평가 시나리오는 가상 기업 데이터(facts.json에 출처 선언).

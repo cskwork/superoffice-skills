@@ -43,7 +43,14 @@ Backward-trace: clean (이번 런 편집은 전부 GOAL SC1-SC9 또는 리뷰 fi
 - Residual risk from data gap: 실제 회사 브랜드킷/양식 파일 미사용 - 브랜드 상속 경로는 이번 런에서 미검증
 - Post-deploy confirmation plan: 실제 업무 문서 요청에서 브랜드 상속 + hwpx 경로 확인
 
+## Results (2026-07-11 추가분)
+
+- [x] hwpx 공문 4종째 생산: 게이트 green + OWPML validate/라운드트립/공문 린트 1.0, 렌더 미검증 명시(플러그인 부재 실측) - producer 보고, critic FIX-MED(시각층만), MINOR 문구 수정 후 전 체인 재실행 green
+- [x] hwpx 환류 4건: hwpx.md 3건 + 공문 하우스 견본 신설(examples/format/official-notice.md, safety+korean 게이트 PASS) + examples.md 등재 - 빌더 보고, 계약 테스트 green
+- [x] templates/doc-claims.md에 렌더 검증 메모 표준 블록 + .csv 미스캔 주의 반영 (critic 보강 제안)
+- [x] 랜딩 docs/index.html KO/EN 8곳 렌더 검증 반영, korean-gate PASS, 체크 카드 5+5 대칭
+
 ## Residual Risk
 
-- Not proven: hwpx 문서 생산 경로(이번 런 4종째 미생산 - d3, 해당 경로 무변경), 회사 브랜드킷 상속(가상 시나리오라 공통 팔레트만 사용), Windows에서의 officecli 동작(macOS만 실측 - 문서에는 officecli 자체 안내로 귀속), xlsx 비-첫 시트의 차트/조건부서식 시각 렌더(officecli 시트 선택 한계 - 완화책 문서화됨).
-- Follow-up: 실제 업무 문서 요청에서 브랜드킷 상속 + hwpx 경로 확인; officecli PDF/hwpx 플러그인 생태계 성숙 시 재평가.
+- Not proven: hwpx 시각층(officecli 플러그인 부재로 렌더 불가 - 대체 검증 3종은 실행됨, 발송 전 한글 뷰어 육안 1회가 잔여), 회사 브랜드킷 상속(가상 시나리오라 공통 팔레트만 사용), Windows에서의 officecli 동작(macOS만 실측 - 문서에는 officecli 자체 안내로 귀속), xlsx 비-첫 시트의 차트/조건부서식 시각 렌더(officecli 시트 선택 한계 - 완화책 문서화됨).
+- Follow-up: 실제 업무 문서 요청에서 브랜드킷 상속 경로 확인; officecli PDF/hwpx 플러그인 생태계 성숙 시 재평가.

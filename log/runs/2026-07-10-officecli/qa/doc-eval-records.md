@@ -24,6 +24,14 @@
 - doc-critic 판정: FIX-MED (대시보드 시트 렌더 공백 - officecli가 첫 시트만 캡처) -> 수정: 대시보드를 첫 시트로 재배치(새 xlsx.md 권고 적용) 후 렌더 확보. 렌더 육안에서 **차트가 합계 행(8행)을 덮는 실결함 추가 발견** -> 앵커 A11->A15 이동으로 수정, 재검증. doc-claims 렌더 메모 "검증됨"으로 갱신, F열 클리핑 메모 정정.
 - validate: "Found 5 validation error(s)" - 3건 openpyxl dxf 저장 특성 + 2건 라운드트립 차트 스타일 XML, 셀 데이터/수식 무영향(issues 0건). xlsx.md에 실측 문구로 환류됨.
 
+## 4. official-notice.hwpx (.superoffice/official-notice/) - 2026-07-11 추가
+
+- 생산: python-hwpx 2.24.0, 협력사 시스템 점검 안내 공문(문서번호/시행일/수신/제목/개조식 본문/요청/문의처/공개구분/발신명의/끝.). facts.json 9건 전수 선언.
+- 게이트: safety/korean/integrity PASS (첫 실행부터 green)
+- 검증: 렌더는 officecli hwpx 플러그인 부재(실측 "No plugins installed")로 **미검증 명시** - 대체 검증 3종 실제 실행: OWPML validate ok, 라운드트립 텍스트 완전 일치, 공문 구조 린트 11개 규칙 score 1.0.
+- doc-critic 판정: FIX-MED - 유일 사유는 시각층 미검증(residual 처리 자체는 "4종 중 모범" 평가, 한글 뷰어 육안 1회가 발송 전 잔여 과제) + MINOR 1건(요청 문장 목적격조사 중첩) -> 수정 후 게이트·validate·라운드트립·린트 전부 재실행 green.
+- 환류: hwpx.md 마찰 4건(버전 표기 2.24.0 재확인, 공문 린트 호출·공개구분 하드 요구 문서화, fallback stdout 주의, 공문 하우스 견본 examples/format/official-notice.md 신설) + critic 보강 제안(표준 렌더 검증 메모 블록)을 templates/doc-claims.md에 반영.
+
 ## 최종 재확인 (conductor 직접 실행)
 
 - officecli validate: pptx/docx 클린 exit 0, xlsx 5건 보고 exit 1(발견 시 exit 1이 정상 동작 - doc-env.py는 발견 보고를 근거로 반환)

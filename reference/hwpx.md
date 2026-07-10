@@ -7,9 +7,9 @@ Load from `reference/office.md` when 형식 = .hwpx. 한국 공공기관·기업
 - **.hwpx** (HWP 2018+, ZIP+XML/OWPML): 전 OS에서 생성·편집·읽기·검증·변환 가능. "1급 풀 지원"은 이쪽이다.
 - **.hwp** (구 바이너리 OLE): 직접 생성 불가(포맷 비공개). 한컴 COM 자동화(`pyhwpx`)는 **Windows + 한컴오피스 설치 전용** - macOS 불가. .hwp를 받으면 한컴/LibreOffice로 .hwpx 변환 후 처리하거나, Windows에서만 pyhwpx 경로. cross-platform 약속은 .hwpx 기준임을 사용자에게 먼저 알린다.
 
-라이브러리: `python-hwpx` (PyPI `python-hwpx`, import `hwpx`, **Apache-2.0**, 순수 Python). 실측: 2.11.1에서 생성·라운드트립·검증 확인. 설치: venv에 `pip install python-hwpx`.
+라이브러리: `python-hwpx` (PyPI `python-hwpx`, import `hwpx`, **Apache-2.0**, 순수 Python). 실측: 2.11.1에서 생성·라운드트립·검증 확인, 2.24.0에서 재확인(문서화된 시그니처 add_paragraph/save_to_path/export_text/validate 전부 일치). 설치: venv에 `pip install python-hwpx` - 지금 설치되는 버전은 2.24.0(실측).
 
-> 실행 시 stderr로 "manifest에서 masterPage/version 못 찾아 fallback" 경고가 날 수 있다 - 동작에 무해(빈 문서 기본 구조). 로그에 섞이면 무시하거나 stderr를 분리한다.
+> `HwpxDocument.new()/.open()/.save_to_path()`는 호출마다 stdout으로 "manifest에서 masterPage/history/version을 찾지 못해 fallback 사용" 안내를 출력한다(실측) - 오류 아님(빈 문서 기본 구조). 로그에 섞이면 무시하거나 stdout을 분리한다.
 
 ## 생성·편집 (실측 API)
 
@@ -25,7 +25,7 @@ doc.add_picture("chart.png")                              # 실제 파일만
 doc.save_to_path("report.hwpx")                           # save()는 deprecated -> save_to_path 사용
 ```
 
-주요 메서드(실측 존재): `add_paragraph/add_table/add_picture/add_image/add_footnote/add_endnote/add_hyperlink/add_memo/add_shape`, `set_header_text/set_footer_text/set_page_size/set_page_margins/set_page_number`, `merge_table_cells/find_cell_by_label/get_table_map`, `replace_text_in_runs`(치환), `ensure_run_style/char_property`. 고급 모듈 헬퍼: `hwpx.create_document_from_plan`(plan->문서), `hwpx.mail_merge`/`load_mail_merge_rows`(메일머지), `hwpx.list_templates`/`describe_template`(템플릿), `hwpx.inspect_official_document_style`(공문서 양식 점검).
+주요 메서드(실측 존재): `add_paragraph/add_table/add_picture/add_image/add_footnote/add_endnote/add_hyperlink/add_memo/add_shape`, `set_header_text/set_footer_text/set_page_size/set_page_margins/set_page_number`, `merge_table_cells/find_cell_by_label/get_table_map`, `replace_text_in_runs`(치환), `ensure_run_style/char_property`. 고급 모듈 헬퍼: `hwpx.create_document_from_plan`(plan->문서), `hwpx.mail_merge`/`load_mail_merge_rows`(메일머지), `hwpx.list_templates`/`describe_template`(템플릿), `hwpx.tools.official_lint.inspect_official_document_style`(공문서 양식 점검 - 아래 "공문 작성" 절).
 
 brand-kit 적용 - 제목/헤더/상태 색은 `ensure_run_style(color=, bold=, size=)`에 `brand-kit.json` 색을 넣어 일괄 적용한다(HWPX color-limit 준수, `reference/brand-kit.md`).
 
@@ -47,6 +47,17 @@ images = doc.list_images()
 report = doc.validate()                  # -> ValidationReport (실측: Contents/header.xml, section0.xml 검증)
 ```
 생성/편집 후 항상 `validate()`로 OWPML 정합성 확인 - 한컴오피스에서 못 여는 문서를 사전 차단.
+
+## 공문 작성
+
+공문(기안·시행문)은 하우스 견본 `examples/format/official-notice.md`의 구조를 따른다 - 문서번호/시행일/수신/제목/관련근거(선택)/본문 개조식(1. 2. 3.)/요청사항/문의처/공개구분/발신명의/"끝.". 생성 후 공문서 양식을 점검한다:
+
+```python
+from hwpx.tools.official_lint import inspect_official_document_style
+report = inspect_official_document_style("gongmun.hwpx", document_type="공문")
+```
+
+11개 규칙 범주 점검(실측): 항목 기호 위계, 날짜·금액 표기, 쌍점 띄어쓰기, 수신·시행·공개구분·"끝." 존재 등. **"공개구분" 문구가 문서 어딘가에 없으면 통과하지 못한다**(실측 - 소스 확인으로만 드러난 하드 요구) - 견본에 그 행을 넣어 둔 이유다.
 
 ## Lean fallback (라이브러리 부재/깨짐)
 

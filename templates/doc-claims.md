@@ -17,11 +17,17 @@
 
 바이너리 문서(.docx/.pptx/.xlsx/.pdf/.hwpx)는 본문/셀을 텍스트로 추출해 여기 둔다 - office-gate는 텍스트만 스캔한다.
 
-- <본문 .txt/.md/.csv 경로>   # 예: body.txt (hwpx export_text / pdfplumber / docx paragraphs), cells.csv (xlsx 셀 덤프)
+- <본문 .txt/.md 경로>   # 예: body.txt (hwpx export_text / pdfplumber / docx paragraphs + section.header/.footer), cells.md (xlsx 셀 덤프 - korean-gate는 .csv를 스캔하지 않으니 .md/.txt로)
 
 ## run-to-prove
 
 - `bash templates/office-gate.sh <vault> <text files>`   # safety(이모지/PII/링크) + korean + integrity (+contrast 색 선언 시)
+- `python templates/doc-env.py officecli-render <doc> <out.png>` + PNG 육안   # 렌더 검증 (reference/office.md) - 불가하면 아래 렌더 검증 메모에 기록
+
+## 렌더 검증 메모 (핵심 산출물에 렌더 증거가 없으면 SHIP 불가 - doc-critic 판정 규칙)
+
+- 상태: <검증됨 | 미검증>
+- 미검증일 때 표준 기록: 도구 부재/불가의 실측 명령과 출력 한 줄, 실행한 대체 검증(예: OWPML validate·라운드트립·구조 린트·view text --range), 대체가 못 덮는 잔여 시각 항목(넘침/폰트/여백 등), 렌더 파일명이 실제 내용과 일치하는지.
 
 ## substitutions (도구/라이브러리 부재 시, 위조 대신 기록)
 
