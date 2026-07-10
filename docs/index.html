@@ -152,7 +152,7 @@
     <div class="three">
       <div><h3>결론 먼저(BLUF)</h3><p>제목이 곧 결론인 action title, 한 장짜리 보고, SCQA 임원 요약, RAG 상태판. 디자인보다 메시지 구조를 먼저 잡습니다.</p></div>
       <div><h3>일관된 회사 브랜드</h3><p>회사 템플릿 파일 상속과 brand-kit.json 인터뷰를 모두 지원합니다. 색·폰트·로고·규정을 한 번만 정해 두면 모든 형식에 똑같이 적용됩니다.</p></div>
-      <div><h3>검증은 눈대중이 아니다</h3><p>만드는 쪽이 스스로 통과시키지 않습니다. 별도의 검수 단계가 office-gate를 돌려 맞춤법·사실·이모지·색 대비를 점검합니다.</p></div>
+      <div><h3>검증은 눈대중이 아니다</h3><p>만드는 쪽이 스스로 통과시키지 않습니다. 별도의 검수 단계가 office-gate를 돌려 맞춤법·사실·이모지·색 대비를 점검하고, 렌더된 PNG를 직접 봐서 텍스트 넘침·잔여 플레이스홀더까지 잡습니다.</p></div>
     </div>
   </section>
 
@@ -213,6 +213,7 @@
       <div class="check"><b>korean-gate</b><span>어절 띄어쓰기 + 흔한 맞춤법(<code>korean-rules.json</code>). 거의 확실한 오류만 차단.</span></div>
       <div class="check"><b>integrity-gate</b><span><code>facts.json</code>의 수치·날짜·통계에 출처가 있는지. 미출처 수치 차단.</span></div>
       <div class="check"><b>contrast-gate</b><span>표지·도표·배지의 텍스트/배경 쌍 WCAG AA. 회사 색도 예외 없음.</span></div>
+      <div class="check"><b>렌더 검증</b><span>OfficeCLI(선택 도구)가 docx·pptx·xlsx를 PNG로 렌더 - 넘침·겹침·잔여 플레이스홀더를 눈으로 확인하고 <code>view issues</code>·<code>validate</code>가 보조. 없으면 "렌더 미검증"으로 기록할 뿐 꾸며내지 않음.</span></div>
     </div>
   </section>
 
@@ -224,7 +225,7 @@
       <li><b>Read</b><span>형식·대상·목적·변환 대상을 한 줄로 정리.</span></li>
       <li><b>Brand</b><span>회사 템플릿 상속, 또는 5문항 이하 인터뷰로 brand-kit.json 작성.</span></li>
       <li><b>Build</b><span>doc-producer / xlsx-producer가 메시지 구조와 팔레트를 적용. 실제 자산만 사용.</span></li>
-      <li><b>Critique</b><span>독립 실행. office-gate.sh를 돌려 모든 위반을 기록하되 문서는 고치지 않음.</span></li>
+      <li><b>Critique</b><span>독립 실행. office-gate.sh와 렌더 PNG 육안 검수로 모든 위반을 기록하되 문서는 고치지 않음.</span></li>
       <li><b>Verify</b><span>위반마다 최소한으로 고쳐 통과할 때까지 재실행. 최대 3회.</span></li>
     </ol>
   </section>
@@ -245,7 +246,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
   </section>
 </main>
 <footer class="wrap">
-  <p>자매 스킬 패턴: 문서 제작 기법·게이트·팔레트는 <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>, 스킬 제작·서브에이전트·인터뷰는 <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>에서 가져왔습니다. 라이브러리: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart.</p>
+  <p>자매 스킬 패턴: 문서 제작 기법·게이트·팔레트는 <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>, 스킬 제작·서브에이전트·인터뷰는 <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>에서 가져왔습니다. 라이브러리: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart · OfficeCLI(렌더 검증).</p>
   <p>소스 + 전체 문서: <a href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">github.com/cskwork/superoffice-skills</a>. 현재 2026. 이모지 없음 - 대괄호 마커 <span class="kbd">[현황]</span> <span class="kbd">[조치]</span> <span class="kbd">[결론]</span>.</p>
 </footer>
 </div>
@@ -280,7 +281,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
     <div class="three">
       <div><h3>Answer first (BLUF)</h3><p>Action titles where the title is the conclusion, one-page reports, SCQA executive summaries, RAG dashboards. Message structure comes before any design.</p></div>
       <div><h3>Consistent company brand</h3><p>Both company-template inheritance and a brand-kit.json interview. Capture colors, fonts, logo, and policy once and apply them across every format.</p></div>
-      <div><h3>Verification, not eyeballing</h3><p>The builder never self-approves. An independent critic runs office-gate to judge spelling, facts, emoji, and color contrast.</p></div>
+      <div><h3>Verification, not eyeballing</h3><p>The builder never self-approves. An independent critic runs office-gate to judge spelling, facts, emoji, and color contrast - then reads the rendered PNG to catch text overflow and leftover placeholders.</p></div>
     </div>
   </section>
 
@@ -341,6 +342,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
       <div class="check"><b>korean-gate</b><span>Word spacing + common spelling (<code>korean-rules.json</code>). Only near-certain errors block.</span></div>
       <div class="check"><b>integrity-gate</b><span>Every number/date/stat in <code>facts.json</code> must be sourced. Unsourced figures blocked.</span></div>
       <div class="check"><b>contrast-gate</b><span>Text/background pairs on covers, charts, badges at WCAG AA. Company colors too.</span></div>
+      <div class="check"><b>render verify</b><span>OfficeCLI (optional) renders docx/pptx/xlsx to PNG - overflow, overlap, and leftover placeholders are inspected visually, with <code>view issues</code>/<code>validate</code> as deterministic backup. Absent tool is logged as "unverified", never faked.</span></div>
     </div>
   </section>
 
@@ -352,7 +354,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
       <li><b>Read</b><span>Declare format / audience / purpose / conversion target in one line.</span></li>
       <li><b>Brand</b><span>Inherit a company template or capture brand-kit.json in ≤5 questions.</span></li>
       <li><b>Build</b><span>doc-producer / xlsx-producer. Message structure + palette, real assets only.</span></li>
-      <li><b>Critique</b><span>Independent. Run office-gate.sh, log every violation, no edits.</span></li>
+      <li><b>Critique</b><span>Independent. Run office-gate.sh plus a rendered-PNG visual pass, log every violation, no edits.</span></li>
       <li><b>Verify</b><span>Smallest fix per violation, re-run until green. Cap 3 cycles.</span></li>
     </ol>
   </section>
@@ -373,7 +375,7 @@ git clone https://github.com/cskwork/superoffice-skills ~/.claude/skills/superof
   </section>
 </main>
 <footer class="wrap">
-  <p>Sibling-skill patterns: document craft, gates, and palette from <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>; skill-authoring, subagent, and interview patterns from <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>. Libraries: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart.</p>
+  <p>Sibling-skill patterns: document craft, gates, and palette from <a href="https://github.com/cskwork/supercontent-skill" target="_blank" rel="noopener">supercontent</a>; skill-authoring, subagent, and interview patterns from <a href="https://github.com/cskwork/supergoal-skill" target="_blank" rel="noopener">supergoal</a>. Libraries: python-docx · python-pptx · openpyxl · python-hwpx · pdfplumber · WeasyPrint · LibreOffice+H2Orestart · OfficeCLI (render verification).</p>
   <p>Source + full docs: <a href="https://github.com/cskwork/superoffice-skills" target="_blank" rel="noopener">github.com/cskwork/superoffice-skills</a>. Current 2026. No emoji - bracket markers <span class="kbd">[현황]</span> <span class="kbd">[조치]</span> <span class="kbd">[결론]</span>.</p>
 </footer>
 </div>
