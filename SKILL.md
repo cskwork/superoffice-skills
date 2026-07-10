@@ -1,6 +1,6 @@
 ---
 name: superoffice
-description: Business-document maker for Korean office workers (팀장·경영자). Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform (Windows/macOS). Use for "/superoffice", "보고서 만들어줘", "제안서 docx로", "분기 실적 PPT", "정산표 엑셀로", "KPI 대시보드", "한글 공문 hwpx", "회사 템플릿/브랜드로 만들어줘", "이 문서 표 추출해줘", "pdf로 변환". 학생/학부모 배포 교육 자료가 아니라 회사 업무 문서를 만들 때.
+description: Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform with company branding and gate-checked output. Use for /superoffice, weekly/quarterly reports, docx proposals, pptx decks, xlsx settlement sheets or KPI dashboards, hwpx official letters, applying a company template/brand kit, extracting tables, or converting to pdf. Workplace documents, not educational handouts.
 ---
 
 # /superoffice - 직장인 업무 문서, 회사 브랜드로, 결론 먼저
