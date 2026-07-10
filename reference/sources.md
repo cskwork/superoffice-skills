@@ -22,6 +22,7 @@ Load from `reference/office.md` when 업스트림 코드 출처를 표기하거�
 | PyMuPDF (fitz) | github.com/pymupdf/pymupdf | **AGPL-3.0** | 고속 PDF·이미지·OCR; 상업 SaaS 통합 시 전염 - **기본 비채택** |
 | LibreOffice | libreoffice.org | **GPLv3** (Java) | headless 문서 변환(soffice CLI); recalc·thumbnail·HWPX/OOXML->PDF |
 | H2Orestart (ebandal) | github.com/ebandal/H2Orestart | **GPLv3 + Java** | LibreOffice용 HWP/HWPX import 확장; .hwpx 변환용 별도 설치 |
+| OfficeCLI (iOfficeAI) | github.com/iOfficeAI/OfficeCLI | Apache-2.0 | 렌더 검증(screenshot/issues/validate) + 템플릿 merge 채움 + 읽기·간단 편집 보조 (선택, 실측 1.0.135). PDF/hwpx export는 플러그인 기본 미설치 |
 
 `pandas`(BSD-3)는 데이터 레이어로만 쓰고 서식은 openpyxl/xlsxwriter 엔진으로 내려간다 - 라이선스 표에는 의존성으로만 둔다.
 

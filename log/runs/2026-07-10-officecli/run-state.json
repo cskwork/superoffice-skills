@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "mode": "LEGACY",
+  "intent_gate": {
+    "intent": "superoffice 스킬 개선: OfficeCLI 통합 결정 + 대표 문서 생성·평가 환류",
+    "confidence": "high",
+    "mode": "LEGACY",
+    "capability_refs": ["reference/role-loop.md", "reference/delivery-gate.md"],
+    "uncertainty": "OfficeCLI 한국어 렌더 품질 미실측"
+  },
+  "branches": {
+    "source_base_branch": "main",
+    "target_integration_branch": "main",
+    "run_branch": "run/officecli-2026-07-10",
+    "worktree_path": ".claude/worktrees/officecli-run",
+    "refs_verified": true
+  },
+  "plan_approval": "auto",
+  "completion_promise": {
+    "promised_outcome": "OfficeCLI 역할 결정·배선된 스킬 + 게이트/시각검증 통과 대표 문서 3종 + 환류 개선 1건 이상",
+    "required_proof": ["officecli 명령 출력", "office-gate green", "렌더 PNG 육안", "계약 테스트 green"],
+    "stop_condition": "GOAL.md SC1-SC9 전부 체크 또는 max_iterations",
+    "max_iterations": 8,
+    "status": "fulfilled"
+  },
+  "phase": "Done",
+  "iteration": 3,
+  "unresolved_gates": [],
+  "regression_ledger": [
+    "tests/reference-links-contract.test.sh: green (매 편집 후 재실행)",
+    "tests/gate-data-contract.test.sh: green (매 편집 후 재실행)",
+    "office-gate: weekly-report/q2-results-deck/kpi-dashboard 전체 green"
+  ],
+  "blockers": [],
+  "last_proof_command": "최종 Exact Verify: 계약 2/2+7/7, office-gate 3종 PASS, korean-gate 11파일 PASS (conductor 직접)",
+  "next_action": "run 브랜치 커밋 -> 사용자 수락 시 main 병합",
+  "forced_reflection": {
+    "required_when_iteration_cap_hit": true,
+    "what_keeps_failing": "",
+    "likely_root_cause": "",
+    "unproven_requirement": "",
+    "regressed_previously_green": "",
+    "smallest_next_action": ""
+  },
+  "updated_at": "2026-07-10T00:00:00Z"
+}

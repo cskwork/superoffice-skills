@@ -23,6 +23,8 @@ doc.save("report.docx")
 
 페이지 크기 기본값에 의존하지 말 것 - 한국 업무 관례는 A4. `doc.sections[0]`에 `page_width`/`page_height`를 명시한다.
 
+**"A4 1페이지" 요구는 기본 스타일만으로 조용히 넘친다**(실측): 빈 `Document()`의 기본 스타일(Heading 1 space-before 24pt, Heading 2 space-before 10pt, 본문 1.08배 줄간격)만으로도 7섹션 보고서가 2페이지로 밀린다. 1페이지에 맞추려면 `Normal`/`Heading 1`/`Heading 2`/`List Bullet`의 `paragraph_format`을 단일 줄간격 + 콤팩트한 space_before/space_after로 재정의하고 여백을 A4 18/15mm 수준으로 좁힌다. 분량은 눈대중하지 말고 렌더 검증의 `--grid` 스크린샷(1타일=1페이지; 공통 절차는 `office.md` 렌더 검증)으로 센다 - 이 넘침은 렌더 없이 텍스트 게이트를 그대로 통과한다.
+
 ## 한글 폰트 - w:eastAsia 필수
 
 `run.font.name`은 OOXML의 `w:ascii`/`w:hAnsi`(라틴)만 설정한다. 한글 글리프는 `w:eastAsia` 속성을 따로 지정해야 의도한 폰트로 렌더된다. 미지정 시 뷰어 기본 한글 폰트로 떨어진다(깨지진 않으나 폰트 불일치).
@@ -108,6 +110,18 @@ soffice --headless --convert-to "hwp:Hwp Document" report.docx # docx -> hwp는 
 ```
 soffice 경로 OS 분기와 래퍼는 `templates/doc-env.sh`(`soffice_convert`). 변환 도구 부재 시 docx 원본 + 수동 변환 안내를 남긴다(위조 금지).
 
+## 렌더 검증 (OfficeCLI, 선택)
+
+공통 절차·부재 시 처리는 `reference/office.md`의 "렌더 검증". 여기서는 docx 고유 주의만.
+
+```bash
+bash templates/doc-env.sh officecli_render report.docx report.png   # 육안 검수용 PNG (view screenshot)
+bash templates/doc-env.sh officecli_validate report.docx            # OpenXML 구조("no errors found")
+```
+
+- **빈 문서엔 스타일 파트가 없다**(실측): from-scratch로 만든 문서에 `Heading 1` 등 스타일 파트가 없으면 그 스타일 참조가 경고로 뜬다. 스타일 서식이 필요하면 python-docx로 스타일을 생성하거나 회사 템플릿을 상속한다 - officecli create의 빈 골격에 의존하지 않는다.
+- **기본 eastAsia 폰트는 맑은 고딕**(실측, docDefaults) - Windows 협업에 안전하다. 위 `w:eastAsia` 절과 일관.
+
 ## 게이트
 
-업무 문서 -> `templates/office-gate.sh <vault> report.docx`. korean-gate는 텍스트(.md/.txt) 대상이므로, 본문을 `doc-claims.md`에 근거로 옮겨 적거나 별도 .txt로 내보내 검사한다(이미지화된 docx 자체는 텍스트 스캔 불가). 수치·날짜는 `facts.json` 출처 필수.
+업무 문서 -> `templates/office-gate.sh <vault> report.docx`. korean-gate는 텍스트(.md/.txt) 대상이므로, 본문을 `doc-claims.md`에 근거로 옮겨 적거나 별도 .txt로 내보내 검사한다(이미지화된 docx 자체는 텍스트 스캔 불가). 머리말/바닥글은 `doc.paragraphs`에 안 잡히니 `section.header`/`section.footer` 텍스트도 함께 내보낸다 - 빠뜨리면 헤더 문구가 게이트 스캔을 우회한다(실측). 수치·날짜는 `facts.json` 출처 필수.

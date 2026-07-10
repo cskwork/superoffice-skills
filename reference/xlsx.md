@@ -153,7 +153,7 @@ for row in ws.iter_rows(values_only=True): print(row)
 wb.close()   # read_only는 close 필요
 ```
 
-한계(실측): `data_only=True`는 **수식의 캐시된 결과**를 반환하는데, 파일을 엑셀/LibreOffice가 한 번 열어 저장한 적이 없으면 모두 `None`이다(openpyxl은 수식을 계산하지 않음). 계산된 값이 필요하면 `soffice`로 한 번 변환·저장하거나 원본 수치를 읽는다. `read_only=True`는 대용량을 스트리밍하지만 셀이 read-only가 된다.
+한계(실측): `data_only=True`는 **수식의 캐시된 결과**를 반환하는데, 파일을 엑셀/LibreOffice가 한 번 열어 저장한 적이 없으면 모두 `None`이다(openpyxl은 수식을 계산하지 않음). 계산된 값이 필요하면 LibreOffice 라운드트립(`soffice --headless --convert-to xlsx`)으로 캐시를 채우거나 원본 수치를 읽는다 - 단 officecli validate는 이런 파일에서 검증 오류를 보고할 수 있다(실측 kpi-dashboard.xlsx: "Found 5 validation error(s)" - validate는 클린일 때만 exit 0, 오류 발견 시 exit 1; doc-env.py `officecli-validate`는 발견 보고를 근거 텍스트로 그대로 반환하고 파일 부재 같은 호출 실패만 실패 처리한다). 5건 중 3건은 openpyxl이 저장한 조건부서식 dxf의 font family 자식 순서(라운드트립과 무관한 openpyxl 저장 특성), 2건은 LibreOffice 라운드트립이 추가한 차트 스타일 확장 XML(`/xl/charts/style1.xml`)이며 - 둘 다 셀 데이터·수식에는 무영향이다. 더 가벼운 검증은 officecli `view <xlsx> text --range '시트명!A1'`가 자체 수식 평가를 하므로 라운드트립 없이 평가값을 준다. `read_only=True`는 대용량을 스트리밍하지만 셀이 read-only가 된다.
 
 ## 변환
 
@@ -166,6 +166,18 @@ bash templates/doc-env.sh soffice_convert kpi.xlsx pdf out/   # LibreOffice head
 ## brand-kit 색 적용
 
 회사 색을 헤더 fill·차트 시리즈에 입히되 본문 셀은 monochrome 유지(강조는 한 곳). brand-kit.json의 색도 `contrast-gate` AA를 통과해야 한다 - 회사 색이 흰 배경에서 미달이면 경고 + 더 진한 변형을 제안한다. openpyxl은 # 없는 hex, XlsxWriter는 # 있는 hex로 변환해 넣는다. 상세는 `reference/brand-kit.md`.
+
+## 렌더 검증 (OfficeCLI, 선택)
+
+공통 절차·부재 시 처리는 `reference/office.md`의 "렌더 검증". 여기서는 xlsx 고유 주의만.
+
+```bash
+bash templates/doc-env.sh officecli_render kpi.xlsx kpi.png   # 그리드+한글 헤더 육안 검수 (view screenshot)
+```
+
+- **다중 시트는 첫 시트만 렌더된다**(실측): officecli screenshot은 문서 순서상 첫 시트만 캡처하며 시트 지정 수단이 사실상 없다(`--page`는 시트 선택자가 아니고, `--range` 스크린샷은 이 환경에서 headless browser 오류로 실패, activeTab 스왑도 무효). 첫 시트 밖의 시트는 `officecli view <xlsx> text --range '시트명!A1:O8'`로 수식 평가값·한글 무결성을 확인하고, 차트·조건부서식의 시각 렌더는 **미검증**으로 `doc-claims.md`에 명시한다(위조 금지). 대시보드처럼 육안이 중요한 시트는 문서의 첫 번째 시트로 배치한다.
+- **읽기·간단 수정 보조로 쓸 때** officecli 셀 경로는 `/<시트명>/<A1참조>` 형식이다(실측: `/Sheet1/A1`, `/sheet[1]/cell[A1]` 아님). formula는 **`=` 없이** 쓰고(`set /Sheet1/B10 --prop formula="SUM(B2:B9)"`) 쓰기 시점에 평가된다(`computedValue`·`evaluated=true`). 정밀 생성·차트·조건부서식·수식 문자열은 openpyxl/XlsxWriter가 기본 - officecli는 렌더 검증과 단순 셀 보조에 쓴다.
+- officecli로 셀을 **수정**하면 python/게이트가 읽기 전에 `officecli close kpi.xlsx`로 flush한다(set/add는 문서를 백그라운드 resident로 유지). view/render는 읽기 전용이라 무관.
 
 ## 게이트
 

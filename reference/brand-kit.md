@@ -30,6 +30,14 @@ wb = load_workbook("회사.xlsx")        # 셀 스타일·named style·열폭·�
 
 기존 양식의 **빈칸 채우기/in-place 편집**은 run 단위 텍스트 치환으로 fidelity를 보존한다 - 자세한 편집 경로는 형식별 `reference/docx.md` / `reference/pptx.md`를 본다. 회사 색·폰트를 brand-kit.json으로 별도 캡처하려면 아래 인터뷰를 양식 파일에서 먼저 추출해 채운다.
 
+**OfficeCLI merge (선택 - 플레이스홀더 템플릿)**: 회사 템플릿에 `{{key}}` 플레이스홀더가 박혀 있으면 python 상속 대신(또는 함께) `officecli merge`로 일괄 치환할 수 있다 - 반복 필드가 많은 정형 문서(계약서·증명서·안내문)에 빠르다.
+
+```bash
+officecli merge 템플릿.docx out.docx --data '{"recipient":"홍길동","date":"2026-07-10"}'   # 또는 --data data.json
+```
+
+`{{key}}`를 값으로 치환하며 한글은 유지된다(실측). `--data`는 플래그 필수(위치 인자 아님). 이 경로는 python 상속(스타일·표·차트 상속)을 **대체하지 않고** 플레이스홀더 치환에만 병기한다. merge는 결과를 즉시 디스크에 저장하므로 resident가 없고 별도 `close`도 불필요하다(실측: `officecli close out.docx` -> "already saved to disk; nothing to close") - python/게이트가 바로 읽으면 된다. create/add는 문서를 백그라운드 resident로 유지하니 읽기 전에 `officecli close`로 flush한다(view/validate는 무관).
+
 ### 회사 양식 분석 (상호작용 - 양식 있을 때만)
 
 회사 자체 양식 파일이 있으면 그걸 분석해 브랜드를 잡는 게 1순위다(추상 질문보다 정확). 흐름:

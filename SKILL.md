@@ -12,7 +12,7 @@ Intent -> 형식 판별 -> 회사 브랜드 적용 -> 결론 먼저 메시지 �
 - 결론 먼저. 팀장·경영자는 60초 안에 권고를 이해해야 한다 - BLUF/action title/한장보고. 색·레이아웃보다 메시지 구조가 먼저다 (`reference/biz-report.md`).
 - 브리프 먼저 읽는다. 형식(docx/pptx/xlsx/hwpx/pdf)·대상·목적·분량·변환 타깃을 추론해 한 줄로 선언하고, 기본 템플릿이 아니라 그 브리프에 맞춘다.
 - 회사 브랜드를 입힌다. 회사 템플릿 파일 상속 + brand-kit.json(색/폰트/로고/정책)을 한 번 캡처해 모든 형식에 일관 적용 (`reference/brand-kit.md`). 회사 색도 contrast AA를 지킨다.
-- 검증은 눈대중이 아니다. 모든 산출물은 `templates/office-gate.sh`(safety+korean+integrity+contrast)를 통과한다. Builder는 자기 승인하지 않는다.
+- 검증은 눈대중이 아니다. 모든 산출물은 `templates/office-gate.sh`(safety+korean+integrity+contrast)를 통과한다. Builder는 자기 승인하지 않는다. 바이너리 산출물은 OfficeCLI(선택; `brew`/`scoop`/`npm`)가 있으면 렌더 검증(screenshot/issues/validate)으로 시각 결함까지 확인한다.
 - 절대 위조하지 않는다. 없는 수치·날짜·통계는 `facts.json` 출처 또는 삭제. 라이브러리/변환 도구 부재 -> 문서화된 placeholder + `[substitution]`, 가짜 파일·가짜 렌더 금지.
 - 협업 안전. 이모지 금지(대괄호 마커 `[현황]`/`[조치]`), 어절 띄어쓰기·맞춤법, 범용 한글 폰트(맑은 고딕/나눔). cross-platform 경로·폰트는 `templates/doc-env.py`에 위임.
 - Hard stops. 외부 전송/게시, 회사 기밀 문서의 외부 서비스 업로드, 파괴적 단계는 명시적 동의. 모호한 브리프 -> 한 질문, 비대화형 -> 보수적 가정 + 로그.
@@ -42,7 +42,7 @@ Tie-breaks: AI 초안 수업 덱·교육 자료 -> 이 레포 아님(superconten
 1. **Read (브리프).** 형식·대상·목적·분량·변환 타깃·기밀 등급을 추론, 한 줄 선언. 두 해석이 갈리면 한 질문, 비대화형이면 보수적 가정 + 로그. vault 생성. (`reference/office.md`)
 2. **Brand (오버레이, 필요 시).** 회사 자체 양식이 있으면 그 파일을 분석해 색·폰트·레이아웃을 추출하고 사용자 확인을 받아(상호작용) brand-kit.json 확정; 없으면 `brand-interviewer`가 ≤5 질문으로 캡처. `.superoffice/brand-kit.json`에 저장해 재사용. 회사 양식은 형식 예시로도 쓴다(`reference/examples.md`). (`reference/brand-kit.md`, `agents/brand-interviewer.md`)
 3. **Build.** docx/pptx/pdf/hwpx는 `doc-producer`, xlsx는 `xlsx-producer`. 메시지 구조는 `biz-report.md`, 디자인 팔레트는 형식 reference, 사용자가 형식/예시를 주면 그 구조를 따른다(`reference/examples.md`), 실제 자산만(위조 금지). `doc-claims.md` + `facts.json` 누적. 자기 승인 금지. (`agents/doc-producer.md`, `agents/xlsx-producer.md`)
-4. **Critique (독립; 문서 무수정).** `doc-critic`이 본문/셀을 텍스트로 enumerate, `office-gate.sh` 실행, 그다음 스크립트가 못 보는 것 판정: BLUF/action title/So-what/MECE, 한국어 자연스러움, 브랜드 일관성, 표·수치 정합. 모든 위반 로그. (`agents/doc-critic.md`)
+4. **Critique (독립; 문서 무수정).** `doc-critic`이 본문/셀을 텍스트로 enumerate, `office-gate.sh` 실행, officecli 있으면 산출물을 PNG로 렌더해 육안 검수(텍스트 넘침·잔여 플레이스홀더; 부재 시 "렌더 미검증" 명시), 그다음 스크립트가 못 보는 것 판정: BLUF/action title/So-what/MECE, 한국어 자연스러움, 브랜드 일관성, 표·수치 정합. 모든 위반 로그. (`agents/doc-critic.md`)
 5. **Verify.** 위반마다 최소 수정, green까지 재실행. 통과를 명령 출력으로 보고. Cap: 3 사이클; 같은 규칙이 계속 실패하면 멈추고 남은 것을 정직하게 보고.
 
 Roles -> personas: 브랜드=`agents/brand-interviewer.md`, 문서빌드=`agents/doc-producer.md`, 엑셀빌드=`agents/xlsx-producer.md`, 검수=`agents/doc-critic.md`.
@@ -81,5 +81,6 @@ Roles -> personas: 브랜드=`agents/brand-interviewer.md`, 문서빌드=`agents
 - [ ] 이모지 없음, 어절 띄어쓰기·맞춤법, 범용 한글 폰트; cross-platform은 `doc-env.py` 위임
 - [ ] 실제/생성 자산만(위조 없음), 수치·날짜는 `facts.json` 출처
 - [ ] Mode contract 충족: 빌드 모드 -> `templates/office-gate.sh` green(출력 보고) + critic HIGH 0건
+- [ ] 바이너리 산출물은 officecli 있으면 렌더 PNG 육안 검수(텍스트 넘침·잔여 플레이스홀더 없음); 부재 시 "렌더 미검증" 명시
 - [ ] 의도에 대한 최소 변경; 요청 없는 재작성 없음
 - [ ] 외부 전송/게시·기밀 외부 업로드·파괴적 단계는 명시적 동의

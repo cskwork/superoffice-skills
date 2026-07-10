@@ -9,6 +9,9 @@ CLI:
   python doc-env.py chrome-pdf <html> <out.pdf>
   python doc-env.py pandoc <src> <out> [extra]             # md<->office (예: in.md out.docx)
   python doc-env.py font                                   # 한글 TTF 경로 + 폰트명 출력
+  python doc-env.py officecli-render <file> <out.png>      # 렌더 검증 스크린샷 (view screenshot)
+  python doc-env.py officecli-validate <file>              # OpenXML 구조 검증 (validate)
+  python doc-env.py officecli-issues <file>                # 레이아웃 이슈(overflow 등) (view issues)
 """
 from __future__ import annotations
 import os
@@ -69,6 +72,14 @@ def find_pandoc() -> str | None:
             r"C:\Program Files\Pandoc\pandoc.exe",
             os.path.expandvars(r"%LOCALAPPDATA%\Pandoc\pandoc.exe"),
         ]
+    return _first_runnable(cands)
+
+
+def find_officecli() -> str | None:
+    """OfficeCLI 실행 파일 (렌더 검증·merge·읽기 보조). 환경변수 OFFICECLI > PATH."""
+    env = os.environ.get("OFFICECLI")
+    cands = [env] if env else []
+    cands += ["officecli"]
     return _first_runnable(cands)
 
 
@@ -174,6 +185,56 @@ def pandoc_convert(src: str, out: str, extra: list[str] | None = None) -> str:
     return out
 
 
+# ---- 렌더 검증 (OfficeCLI, 선택) -------------------------------------------
+
+_OFFICECLI_MISSING = (
+    "OfficeCLI 없음 - 렌더 검증(screenshot/issues/validate) 생략. placeholder/위조 금지, "
+    "생략 사실을 doc-claims.md에 기록. 설치: macOS `brew install officecli`, "
+    "Windows `scoop install officecli` 또는 `npm i -g @officecli/officecli`."
+)
+
+
+def officecli_render(src: str, out_png: str) -> str:
+    """OfficeCLI 렌더 스크린샷(docx/pptx/xlsx -> PNG). 산출 경로 반환. 부재/실패 시 RuntimeError.
+    읽기 전용(view)이라 resident 문서를 건드리지 않는다."""
+    cli = find_officecli()
+    if not cli:
+        raise RuntimeError(_OFFICECLI_MISSING)
+    r = subprocess.run([cli, "view", src, "screenshot", "-o", out_png],
+                       capture_output=True, text=True)
+    if r.returncode != 0 or not os.path.exists(out_png):
+        raise RuntimeError(f"officecli 렌더 실패: {r.stdout.strip()} {r.stderr.strip()}")
+    return out_png
+
+
+def officecli_validate(src: str) -> str:
+    """OfficeCLI OpenXML 구조 검증. 진단 텍스트를 그대로 반환(발견된 오류는 실패가 아니라 근거).
+    부재/호출 실패 시 RuntimeError."""
+    cli = find_officecli()
+    if not cli:
+        raise RuntimeError(_OFFICECLI_MISSING)
+    r = subprocess.run([cli, "validate", src], capture_output=True, text=True)
+    out = (r.stdout + r.stderr).strip()
+    # 실측 exit code: 클린 0, "Found N validation error(s)" 발견 시에도 1, 파일 부재 등 호출 실패도 1.
+    # 발견 보고는 근거로 반환하고, 발견 보고가 아닌 비0 종료만 호출 실패로 취급한다.
+    if r.returncode != 0 and "validation error" not in out.lower():
+        raise RuntimeError(f"officecli validate 호출 실패: {out}")
+    return out
+
+
+def officecli_issues(src: str) -> str:
+    """OfficeCLI 레이아웃 이슈(텍스트 overflow 등) 보고. 진단 텍스트를 그대로 반환(overflow는
+    실패가 아니라 근거). 부재/호출 실패 시 RuntimeError."""
+    cli = find_officecli()
+    if not cli:
+        raise RuntimeError(_OFFICECLI_MISSING)
+    r = subprocess.run([cli, "view", src, "issues"], capture_output=True, text=True)
+    # 구분: returncode != 0 = 호출 실패(파일 부재 등) -> 실패. exit 0 = 진단(overflow 등 발견 포함) -> 근거로 반환.
+    if r.returncode != 0:
+        raise RuntimeError(f"officecli issues 호출 실패: {r.stdout.strip()} {r.stderr.strip()}")
+    return (r.stdout + r.stderr).strip()
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if not args:
@@ -190,6 +251,12 @@ if __name__ == "__main__":
     elif cmd == "font":
         print("ttf:", korean_ttf_path())
         print("name:", korean_font_name())
+    elif cmd == "officecli-render":
+        print(officecli_render(args[1], args[2]))
+    elif cmd == "officecli-validate":
+        print(officecli_validate(args[1]))
+    elif cmd == "officecli-issues":
+        print(officecli_issues(args[1]))
     else:
         print(__doc__)
         sys.exit(2)

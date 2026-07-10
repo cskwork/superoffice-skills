@@ -31,7 +31,15 @@ State e.g. `DOCS: 1분기 실적 보고 -> .pptx 생성, 회사 브랜드 적용
 bash templates/office-gate.sh .superoffice/<doc> <text source files>
 ```
 
-바이너리 문서(.docx/.pptx/.xlsx/.pdf/.hwpx)는 직접 스캔되지 않는다 - 본문/셀을 텍스트로 뽑아(`export_text`/paragraphs/셀 .csv 덤프/pdfplumber) vault에 두고 그 파일을 검사한다.
+바이너리 문서(.docx/.pptx/.xlsx/.pdf/.hwpx)는 직접 스캔되지 않는다 - 본문/셀을 텍스트로 뽑아(`export_text`/paragraphs/셀 덤프/pdfplumber) vault에 두고 그 파일을 검사한다. docx는 본문(paragraphs) 외 header/footer 텍스트도 추출에 포함한다(python-docx `section.header`/`section.footer`) - 안 그러면 페이지 헤더 문구가 추출 .txt에서 빠져 게이트를 우회한다(실측). 단, korean-gate는 `.md/.txt/.html`만 스캔하므로 셀을 `.csv`로만 뽑으면 safety·integrity는 훑어도 한국어 맞춤법·띄어쓰기 검사는 조용히 건너뛴다(실측) - 한국어 검사가 필요한 셀 텍스트는 `.md`/`.txt`로 뽑는다.
+
+### 렌더 검증 (텍스트 게이트 다음, OfficeCLI 있을 때)
+
+텍스트 게이트는 렌더된 픽셀을 못 본다 - 텍스트 넘침·겹침·폰트 깨짐·여백·잔여 플레이스홀더·대비는 잡지 못한다. officecli가 있으면 텍스트 게이트 통과 후 `view <file> screenshot`으로 바이너리 산출물(.docx/.pptx/.xlsx)을 PNG로 렌더해 **doc-critic이 육안 검수**하고, `view <file> issues`(overflow 등)·`validate`(OpenXML 구조)를 결정론 보조 근거로 첨부한다. 래퍼는 `templates/doc-env.py`(`officecli_render`/`officecli_issues`/`officecli_validate`), 형식별 구문·주의는 각 reference의 "렌더 검증" 소섹션. **새 게이트 스크립트는 만들지 않는다** - `office-gate.sh`는 그대로고 렌더 검증은 그 뒤에 얹는 육안+진단 단계다. officecli 부재 시 이 단계를 생략하고 생략 사실을 `doc-claims.md`에 기록한다(placeholder/위조 금지).
+
+- 페이지 수 확인은 `officecli view <docx> screenshot --grid -o <png>`(콘택트 시트, 1타일=1페이지)가 크로스 플랫폼 정답이다 - docx 페이지 수 stats는 officecli 자체 안내 기준 Windows+Word 전용이며 이 환경(macOS)에선 미지원(실측). grid 타일 내부의 우측 잘림은 grid 뷰포트 아티팩트일 수 있으니 단일 스크린샷과 교차 확인한다.
+- officecli는 렌더 검증 외에 **단순 문서 퀵 빌드**에도 쓸 수 있다(실측): 1~2문단 메모나 간단한 표 수준이면 `officecli create`/`add`로 직접 만든다. 정밀 좌표·브랜드 상속·차트·스타일이 필요하면 python 스택(python-docx/pptx/openpyxl)이 기본이고 officecli는 렌더 검증·단순 셀 보조로 남긴다.
+- `validate`와 `view issues`가 둘 다 클린이어도 시각 결함(잔여 플레이스홀더 등)이 남을 수 있다(실측) - PNG 육안 검수는 생략 불가다.
 
 ## Vault 계약
 
@@ -45,7 +53,14 @@ bash templates/office-gate.sh .superoffice/<doc> <text source files>
 
 - Python 라이브러리는 venv 권장. macOS/Linux 시스템 Python은 PEP 668로 전역 `pip install`이 막힌다: `python3 -m venv venv && ./venv/bin/pip install ...` (Windows: `py -m venv venv`, `venv\Scripts\pip install ...`).
 - 핵심 패키지(전부 순수 Python, MIT/BSD/Apache): `python-docx python-pptx openpyxl pdfplumber pypdf python-hwpx`. 생성 보강: `XlsxWriter`(BSD, 차트 강함) / `reportlab`(LGPL+상용 주의) / `weasyprint`(시스템 Pango 의존).
-- 변환·한글 폰트의 OS 분기(soffice/chrome 경로, TTF 경로, registerFont, w:eastAsia)는 `templates/doc-env.sh` / `templates/doc-env.py`에 집약 - 각 형식 reference는 거기로 위임한다.
+- 변환·한글 폰트의 OS 분기(soffice/chrome 경로, TTF 경로, registerFont, w:eastAsia)는 `templates/doc-env.sh` / `templates/doc-env.py`에 집약 - 각 형식 reference는 거기로 위임한다. `doc-env.py`는 하이픈 파일명이라 `import doc_env`가 안 된다 - 함수(`korean_font_name`/`set_docx_eastasia`/`officecli_render` 등)를 파이썬에서 부르려면 importlib로 로드한다:
+  ```python
+  import importlib.util
+  spec = importlib.util.spec_from_file_location("doc_env", "templates/doc-env.py")
+  doc_env = importlib.util.module_from_spec(spec); spec.loader.exec_module(doc_env)
+  doc_env.korean_font_name()
+  ```
+- 렌더 검증·merge용 선택 의존성 **OfficeCLI**(Apache-2.0): macOS `brew install officecli`, Windows `scoop install officecli` 또는 `npm i -g @officecli/officecli`. 래퍼는 `templates/doc-env.py`(`officecli_render`/`officecli_validate`/`officecli_issues`) - 바이너리 탐색은 env `OFFICECLI`(경로 오버라이드) > PATH 순(실측). 부재 시 렌더 검증 생략 - 아래 참조.
 - 라이선스 경고는 형식 reference 인라인 + `reference/sources.md`. 특히 **PyMuPDF는 AGPL**(상업 통합 시 전염) - 기본 비채택.
 
 ## 회사 브랜드 (팀장·경영자용 핵심)

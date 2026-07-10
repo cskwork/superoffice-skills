@@ -88,6 +88,19 @@ for i, slide in enumerate(prs.slides):
 
 `soffice --headless --convert-to pdf deck.pptx` (H2Orestart 불필요). 경로 래퍼는 `templates/doc-env.sh`.
 
+## 렌더 검증 (OfficeCLI, 선택)
+
+공통 절차·부재 시 처리는 `reference/office.md`의 "렌더 검증". 여기서는 pptx 고유 주의만.
+
+```bash
+bash templates/doc-env.sh officecli_render deck.pptx deck.png   # 육안 검수용 PNG (view screenshot)
+bash templates/doc-env.sh officecli_issues deck.pptx           # 레이아웃 이슈(overflow 등) (view issues)
+```
+
+- **텍스트 넘침은 한국어 덱의 고질 결함** - `view issues`가 이를 정밀 보고한다(실측): `[O1] text overflow: 18 lines at 18.0pt need 324pt, usable 21pt. suggest.height=11.7cm`. 줄수·필요 높이·제안 높이(`suggest.height`)까지 나오니 도형 높이를 키우거나 폰트/문장을 줄이는 결정을 근거 있게 내린다. 한글은 어절이 길어 영어 기준 박스에서 자주 넘친다.
+- **python-pptx 기본 템플릿엔 잔여 푸터 플레이스홀더**가 남는다(A/B 실측): 기본 템플릿 슬라이드에 날짜("1/27/13")·페이지 번호 플레이스홀더가 렌더에 노출될 수 있다 - 텍스트 게이트로는 못 본다. 레이아웃에서 도형만 지우는 것으론 부족하다(실측) - python-pptx 기본 템플릿은 layout과 master 각각에 독립된 Date/Footer/SlideNumber 플레이스홀더를 두므로, layout에서만 지우면 렌더러가 master 플레이스홀더로 폴백해 잔재("1/27/13", "‹#›")가 그대로 남는다. 완전 제거 = layout + master 양쪽에서 해당 도형 삭제 + `<p:hf>`(header/footer 설정) 억제. 가장 확실한 우회는 회사 템플릿 상속 또는 빈 레이아웃(`slide_layouts[6]`). validate/issues가 클린이어도 이 잔재는 검출되지 않으니 렌더 PNG로 확인한다.
+- **`screenshot --page N`은 페이지별로 개별 호출**해야 한다(실측): 여러 페이지 범위를 한 번에 넘기면 첫 페이지만 저장된다. 페이지마다 `--page N`과 서로 다른 `-o` 경로로 나눠 부른다.
+
 ## 게이트
 
 업무 발표자료 -> `office-gate.sh`. 텍스트 근거는 `doc-claims.md`/별도 .txt로 옮겨 korean-gate. 표의 수치는 `facts.json` 출처. 배지·헤더 색쌍은 contrast-pairs.json -> contrast-gate AA.
