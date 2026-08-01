@@ -6,7 +6,7 @@
 ### Install
 
 ```bash
-claude plugin marketplace add cskwork/superoffice
+claude plugin marketplace add cskwork/superoffice-skills
 claude plugin install superoffice@superoffice
 ```
 
@@ -39,7 +39,7 @@ claude plugin marketplace remove superoffice
 ### Install
 
 ```bash
-codex plugin marketplace add cskwork/superoffice --ref main
+codex plugin marketplace add cskwork/superoffice-skills --ref main
 codex plugin add superoffice@superoffice
 ```
 
@@ -66,14 +66,14 @@ codex plugin marketplace remove superoffice
 ### Install (extension, always-on)
 
 ```bash
-gemini extensions install https://github.com/cskwork/superoffice
+gemini extensions install https://github.com/cskwork/superoffice-skills
 ```
 
 ### Install (command, opt-in)
 
 ```bash
 mkdir -p ~/.gemini/commands
-curl -fsSL https://raw.githubusercontent.com/cskwork/superoffice/main/skills/superoffice/agents/gemini.toml \
+curl -fsSL https://raw.githubusercontent.com/cskwork/superoffice-skills/main/skills/superoffice-skills/agents/gemini.toml \
   -o ~/.gemini/commands/superoffice.toml
 ```
 
@@ -99,8 +99,8 @@ gemini extensions uninstall superoffice
 ### Install
 
 ```bash
-npx skills add cskwork/superoffice
-npx skills add cskwork/superoffice -g
+npx skills add cskwork/superoffice-skills
+npx skills add cskwork/superoffice-skills -g
 ```
 
 Type `/superoffice` in a new agent chat.
@@ -131,7 +131,7 @@ npx skills remove superoffice
 ### Install
 
 ```bash
-agy plugin install https://github.com/cskwork/superoffice
+agy plugin install https://github.com/cskwork/superoffice-skills
 ```
 
 ### Verify
