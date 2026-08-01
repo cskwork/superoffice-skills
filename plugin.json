@@ -1,4 +1,4 @@
 {
   "name": "superoffice",
-  "description": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf..."
+  "description": "Business-document maker (docx/pptx/xlsx/hwpx/pdf) with company branding and gate-checked output. Use for /superoffice."
 }

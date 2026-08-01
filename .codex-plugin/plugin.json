@@ -1,7 +1,7 @@
 {
   "name": "superoffice",
   "version": "0.1.0",
-  "description": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf...",
+  "description": "Business-document maker (docx/pptx/xlsx/hwpx/pdf) with company branding and gate-checked output. Use for /superoffice.",
   "author": {
     "name": "cskwork",
     "url": "https://github.com/cskwork"
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Superoffice",
-    "shortDescription": "Business-document maker for Korean managers and executives. Generates, reads, an",
-    "longDescription": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf...",
+    "shortDescription": "Business-document maker (docx/pptx/xlsx/hwpx/pdf) with company branding and gate-checked output. Use for /superoffice.",
+    "longDescription": "Business-document maker (docx/pptx/xlsx/hwpx/pdf) with company branding and gate-checked output. Use for /superoffice.",
     "developerName": "cskwork",
     "category": "Productivity",
     "capabilities": [
