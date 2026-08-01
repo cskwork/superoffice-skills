@@ -1,4 +1,4 @@
 # superoffice
 
-@./SKILL.md
+@./skills/superoffice/SKILL.md
 

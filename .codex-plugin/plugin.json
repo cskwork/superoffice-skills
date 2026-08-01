@@ -15,7 +15,7 @@
     "claude-code",
     "codex"
   ],
-  "skills": "./",
+  "skills": "./skills/",
   "interface": {
     "displayName": "Superoffice",
     "shortDescription": "Business-document maker for Korean managers and executives. Generates, reads, an",
