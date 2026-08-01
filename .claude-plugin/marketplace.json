@@ -1,0 +1,16 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "superoffice",
+  "description": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross",
+  "owner": {
+    "name": "cskwork"
+  },
+  "plugins": [
+    {
+      "name": "superoffice",
+      "description": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

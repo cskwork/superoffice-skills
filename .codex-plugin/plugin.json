@@ -1,0 +1,34 @@
+{
+  "name": "superoffice",
+  "version": "0.1.0",
+  "description": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform with company branding and gate-checked output. Use for /superoffice, weekly/quarterly reports, docx proposals, pptx decks, xlsx settlement sheets or KPI dashboards, hwpx official letters, applying a company template/brand kit, extracting tables, or converting to pdf. Workplace documents, not educational handouts.",
+  "author": {
+    "name": "cskwork",
+    "url": "https://github.com/cskwork"
+  },
+  "homepage": "https://github.com/cskwork/superoffice",
+  "repository": "https://github.com/cskwork/superoffice",
+  "license": "MIT",
+  "keywords": [
+    "superoffice",
+    "skill",
+    "claude-code",
+    "codex"
+  ],
+  "skills": "./",
+  "interface": {
+    "displayName": "Superoffice",
+    "shortDescription": "Business-document maker for Korean managers and executives. Generates, reads, an",
+    "longDescription": "Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform with company branding and gate-checked output. Use for /superoffice, weekly/quarterly reports, docx proposals, pptx decks, xlsx settlement sheets or KPI dashboards, hwpx official letters, applying a company template/brand kit, extracting tables, or converting to pdf. Workplace documents, not educational handouts.",
+    "developerName": "cskwork",
+    "category": "Productivity",
+    "capabilities": [
+      "Instructions"
+    ],
+    "websiteURL": "https://github.com/cskwork/superoffice",
+    "defaultPrompt": [
+      "Use superoffice for this task."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
