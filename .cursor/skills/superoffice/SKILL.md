@@ -1,6 +1,6 @@
 ---
 name: superoffice
-description: Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform with company branding and gate-checked output. Use for /superoffice, weekly/quarterly reports, docx proposals, pptx decks, xlsx settlement sheets or KPI dashboards, hwpx official letters, applying a company template/brand kit, extracting tables, or converting to pdf. Workplace documents, not educational handouts.
+description: Business-document maker for Korean managers and executives. Generates, reads, and converts docx/pptx/xlsx/hwpx/pdf cross-platform with company branding and gate-checked output. Use for /superoffice, weekly/quarterly reports, docx proposals, pptx decks, xlsx settlement sheets or KPI dashboards, hwpx official letters, applying a company template/brand kit, extracting tables from an existing document, or converting between those formats. Educational handouts route to supercontent.
 ---
 
 # /superoffice - 직장인 업무 문서, 회사 브랜드로, 결론 먼저
@@ -15,7 +15,7 @@ Intent -> 형식 판별 -> 회사 브랜드 적용 -> 결론 먼저 메시지 �
 - 검증은 눈대중이 아니다. 모든 산출물은 `templates/office-gate.sh`(safety+korean+integrity+contrast)를 통과한다. Builder는 자기 승인하지 않는다. 바이너리 산출물은 OfficeCLI(선택; `brew`/`scoop`/`npm`)가 있으면 렌더 검증(screenshot/issues/validate)으로 시각 결함까지 확인한다.
 - 절대 위조하지 않는다. 없는 수치·날짜·통계는 `facts.json` 출처 또는 삭제. 라이브러리/변환 도구 부재 -> 문서화된 placeholder + `[substitution]`, 가짜 파일·가짜 렌더 금지.
 - 협업 안전. 이모지 금지(대괄호 마커 `[현황]`/`[조치]`), 어절 띄어쓰기·맞춤법, 범용 한글 폰트(맑은 고딕/나눔). cross-platform 경로·폰트는 `templates/doc-env.py`에 위임.
-- Hard stops. 외부 전송/게시, 회사 기밀 문서의 외부 서비스 업로드, 파괴적 단계는 명시적 동의. 모호한 브리프 -> 한 질문, 비대화형 -> 보수적 가정 + 로그.
+- Hard stops. 외부 전송/게시, 회사 기밀 문서의 외부 서비스 업로드, 파괴적 단계는 명시적 동의.
 
 ## Mode (형식+작업으로 분류, 한 줄로 선언)
 
@@ -45,13 +45,11 @@ Tie-breaks: AI 초안 수업 덱·교육 자료 -> 이 레포 아님(superconten
 4. **Critique (독립; 문서 무수정).** `doc-critic`이 본문/셀을 텍스트로 enumerate, `office-gate.sh` 실행, officecli 있으면 산출물을 PNG로 렌더해 육안 검수(텍스트 넘침·잔여 플레이스홀더; 부재 시 "렌더 미검증" 명시), 그다음 스크립트가 못 보는 것 판정: BLUF/action title/So-what/MECE, 한국어 자연스러움, 브랜드 일관성, 표·수치 정합. 모든 위반 로그. (`agents/doc-critic.md`)
 5. **Verify.** 위반마다 최소 수정, green까지 재실행. 통과를 명령 출력으로 보고. Cap: 3 사이클; 같은 규칙이 계속 실패하면 멈추고 남은 것을 정직하게 보고.
 
-Roles -> personas: 브랜드=`agents/brand-interviewer.md`, 문서빌드=`agents/doc-producer.md`, 엑셀빌드=`agents/xlsx-producer.md`, 검수=`agents/doc-critic.md`.
-
 ## Mode contract (deliverable + done-when)
 
 | Mode | Deliverable | Verified by |
 |---|---|---|
-| DOCX / PPTX / XLSX / HWPX / PDF | 문서 파일 + vault (+변환 산출물) | `office-gate.sh` green (korean+integrity, +contrast when pairs declared); 라이브러리/변환 부재 시 문서화된 placeholder |
+| DOCX / PPTX / XLSX / HWPX / PDF | 문서 파일 + vault (+변환 산출물) | `office-gate.sh` green (safety+korean+integrity, +contrast when pairs declared); 라이브러리/변환 부재 시 문서화된 placeholder |
 | READ | 추출 텍스트/표(.txt/.csv/.md) + 출처 기록 | 형식별 파서로 추출; 스캔 PDF는 OCR 미적용 명시(위조 금지) |
 | CONVERT | 변환 산출물 (또는 원본 + 수동 변환 안내) | 변환 직접 확인; H2Orestart 등 환경 변경은 동의 후 |
 | BRAND (오버레이) | `.superoffice/brand-kit.json` | 스키마 유효 + 색이 contrast AA |
