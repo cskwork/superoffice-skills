@@ -1,0 +1,4 @@
+[
+  { "el": "body text on page", "fg": "#1f2123", "bg": "#faf9f6", "size": "body" },
+  { "el": "button label on accent", "fg": "#f7f7f5", "bg": "#1f6f5c", "size": "normal" }
+]

@@ -35,15 +35,15 @@ State e.g. `Making this as: PPTX 1분기 실적 보고 덱, 회사 브랜드 적
 
 Tie-breaks: AI 초안 수업 덱·교육 자료 -> 이 레포 아님(supercontent). 단일면 인쇄 포스터 -> 이 레포 아님. "표 추출/읽어줘" -> READ. "변환만" -> CONVERT. 정밀 셀·좌표 .pptx vs 빠른 초안 -> 이 레포는 정밀(python-pptx)만.
 
-## Default loop - role-separated, subagent-default
+## Default loop - role-separated
 
-각 역할은 fresh-context 서브에이전트가 기본(디스패치하는 에이전트가 conductor). 단순 단일 수정은 루프를 건너뛰고 인라인. 2+ 문서나 병렬 배치는 문서당 producer 하나로 오케스트레이션. **Vault** = 문서당 작업 디렉토리, 기본 `.superoffice/<doc>/`: `doc-claims.md` + `facts.json` (+선택 `contrast-pairs.json`/`brand-kit.json`), `templates/`에서 시작. `office-gate.sh <vault> <text files>`가 이를 읽는다 - no vault, no gate.
+단순 단일 수정은 인라인으로 처리한다. 그 외에도 준비·작성은 직접 진행할 수 있으며, 문서 수만으로 producer를 늘리지 않는다. 사실·수식·변환·시각 결함의 위험이 큰 산출물은 fresh-context critic으로 독립 검증한다. 각 역할의 세부 계약은 해당 역할을 수행할 때만 읽는다. **Vault** = 문서당 작업 디렉토리, 기본 `.superoffice/<doc>/`: `doc-claims.md` + `facts.json` (+선택 `contrast-pairs.json`/`brand-kit.json`), `templates/`에서 시작. `office-gate.sh <vault> <text files>`가 이를 읽는다 - no vault, no gate.
 
 1. **Read (브리프).** 형식·대상·목적·분량·변환 타깃·기밀 등급을 추론, 한 줄 선언. 두 해석이 갈리면 한 질문, 비대화형이면 보수적 가정 + 로그. vault 생성. (`reference/office.md`)
-2. **Brand (오버레이, 필요 시).** 회사 자체 양식이 있으면 그 파일을 분석해 색·폰트·레이아웃을 추출하고 사용자 확인을 받아(상호작용) brand-kit.json 확정; 없으면 `brand-interviewer`가 ≤5 질문으로 캡처. `.superoffice/brand-kit.json`에 저장해 재사용. 회사 양식은 형식 예시로도 쓴다(`reference/examples.md`). (`reference/brand-kit.md`, `agents/brand-interviewer.md`)
+2. **Brand (오버레이, 필요 시).** 회사 자체 양식이 있으면 그 파일을 분석해 색·폰트·레이아웃을 추출하고 출처를 기록한다. 불명확하거나 기존 지침과 충돌하는 값만 확인해 brand-kit.json 확정; 없으면 `brand-interviewer`가 ≤5 질문으로 캡처. `.superoffice/brand-kit.json`에 저장해 재사용. 회사 양식은 형식 예시로도 쓴다(`reference/examples.md`). (`reference/brand-kit.md`, `agents/brand-interviewer.md`)
 3. **Build.** docx/pptx/pdf/hwpx는 `doc-producer`, xlsx는 `xlsx-producer`. 메시지 구조는 `biz-report.md`, 디자인 팔레트는 형식 reference, 사용자가 형식/예시를 주면 그 구조를 따른다(`reference/examples.md`), 실제 자산만(위조 금지). `doc-claims.md` + `facts.json` 누적. 자기 승인 금지. (`agents/doc-producer.md`, `agents/xlsx-producer.md`)
 4. **Critique (독립; 문서 무수정).** `doc-critic`이 본문/셀을 텍스트로 enumerate, `office-gate.sh` 실행, officecli 있으면 산출물을 PNG로 렌더해 육안 검수(텍스트 넘침·잔여 플레이스홀더; 부재 시 "렌더 미검증" 명시), 그다음 스크립트가 못 보는 것 판정: BLUF/action title/So-what/MECE, 한국어 자연스러움, 브랜드 일관성, 표·수치 정합. 모든 위반 로그. (`agents/doc-critic.md`)
-5. **Verify.** 위반마다 최소 수정, green까지 재실행. 통과를 명령 출력으로 보고. Cap: 3 사이클; 같은 규칙이 계속 실패하면 멈추고 남은 것을 정직하게 보고.
+5. **Verify.** 위반을 최소 수정하고 영향받은 게이트를 다시 실행한다. 통과는 명령 출력으로 보고한다. 동일 실패를 변경 없이 반복하지 말고 원인을 좁힌다. 유용한 범위 내 진전이 불가능한 실제 차단 조건에서 멈추고 필요한 입력과 미검증을 보고한다.
 
 ## Mode contract (deliverable + done-when)
 

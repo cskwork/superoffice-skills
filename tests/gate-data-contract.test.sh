@@ -6,7 +6,7 @@
 # Run from repo root: bash tests/gate-data-contract.test.sh
 set -u
 
-SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SKILL_DIR="$(cd "$(dirname "$0")/../skills/superoffice" && pwd)"
 REF="$SKILL_DIR/reference"
 TPL="$SKILL_DIR/templates"
 PASS=0; FAIL=0

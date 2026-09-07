@@ -5,7 +5,7 @@
 # and a substring. Run from repo root: bash tests/reference-links-contract.test.sh
 set -u
 
-SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SKILL_DIR="$(cd "$(dirname "$0")/../skills/superoffice" && pwd)"
 SKILL_MD="$SKILL_DIR/SKILL.md"
 PASS=0; FAIL=0
 

@@ -1,0 +1,19 @@
+{
+  "note": "safety-gate.mjs matches each pattern as a case-insensitive RegExp against each line. Keep patterns to CLEARLY unsafe phrasings to avoid false positives on legitimate science/history content; the edu-ok line escape covers justified exceptions. Expand per school policy.",
+  "universal": [
+    "자살\\s*(방법|하는\\s*법|충동)",
+    "자해\\s*(방법|하는\\s*법)",
+    "극단적\\s*선택",
+    "(마약|필로폰|대마초|코카인|히로뽕)\\s*(구입|판매|투약|복용|만드)",
+    "(음란|포르노|성행위|성관계)\\b",
+    "(도박|베팅|배팅)\\s*(사이트|방법|하는\\s*법)",
+    "(폭탄|사제\\s*폭발물|총기|무기)\\s*(제조|만드는\\s*법|제작법)",
+    "(주민등록번호|비밀번호|계좌번호|카드번호)\\s*(를)?\\s*(입력|알려|적어|보내)"
+  ],
+  "byBand": {
+    "초저": ["(살해|살인|시체|사체)", "(흡연|음주|담배|술\\s*마)", "(피\\s*튀|잔혹|고문)"],
+    "초고": ["(살해|살인|시체|사체)", "(흡연|음주|담배)", "(잔혹|고문)"],
+    "중": ["(흡연|음주)\\s*(권유|조장)"],
+    "고": []
+  }
+}

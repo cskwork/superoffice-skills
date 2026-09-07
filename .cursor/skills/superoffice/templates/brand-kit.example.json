@@ -1,0 +1,26 @@
+{
+  "company_name": "예시 주식회사",
+  "logo_path": "assets/logo.png",
+  "colors": {
+    "primary": "#273340",
+    "accent": "#3D5A80",
+    "ink": "#1F2933",
+    "bg": "#F3F5F7",
+    "rag": {
+      "green": "#2E6F5E",
+      "amber": "#E3A82B",
+      "red": "#B0413E"
+    }
+  },
+  "fonts": {
+    "ko": "맑은 고딕",
+    "latin": "Calibri"
+  },
+  "footer": "대외비 - 무단 배포 금지",
+  "confidentiality": "CONFIDENTIAL",
+  "conventions": {
+    "date_format": "yyyy-mm-dd",
+    "number_format": "₩#,##0",
+    "page_size": "A4"
+  }
+}

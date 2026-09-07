@@ -82,3 +82,7 @@ Document craft, gates, and palette patterns draw on [supercontent](https://githu
 ## Note on currency
 
 Current year is 2026. The core libraries are pure Python (MIT/BSD/Apache) with no OS lock-in; only Korean-font and conversion-tool OS branches are centralized in `templates/doc-env.py` / `doc-env.sh`.
+
+## Maintained skill sources
+
+Edit `skills/superoffice/` for maintained instructions/helpers and root `examples/` for shared resources. Run `python3 scripts/sync-distributions.py`, then `python3 scripts/sync-distributions.py --check`. Resource copies under the skill and the existing Cursor directory are generated; keep them committed for independent installation.
